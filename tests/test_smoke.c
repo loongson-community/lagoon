@@ -1,5 +1,5 @@
 #define _GNU_SOURCE
-#include "../lagoon.h"
+#include "lagoon.h"
 #include <assert.h>
 #include <stdint.h>
 #include <stdio.h>

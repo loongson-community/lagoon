@@ -9,7 +9,7 @@ Mnemonic functions are generated from [loongson-community/loongarch-opcodes](htt
 ### Assembler
 
 ```c
-#include "lagoon.h"
+#include "include/lagoon.h"
 
 uint8_t buffer[1024];
 lagoon_assembler_t as;
@@ -23,6 +23,8 @@ la_ret(&as);
 ### Labels
 
 ```c
+#include "include/lagoon.h"
+
 lagoon_label_t loop = {0};
 
 la_bind(&as, &loop);
@@ -33,6 +35,8 @@ la_bnez(&as, LA_A0, la_label(&as, &loop));
 ### Disassembler
 
 ```c
+#include "include/lagoon.h"
+
 lagoon_insn_t insn;
 la_disasm_one(0x02c00c04, &insn);
 

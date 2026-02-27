@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "lagoon.h"
+#include "include/lagoon.h"
 
 static void emit32(lagoon_assembler_t* assembler, uint32_t instruction)
 {

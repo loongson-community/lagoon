@@ -9,11 +9,11 @@ set(LAGOON_SOURCES
 )
 
 set(LAGOON_HEADERS
-    lagoon.h
+    include/lagoon.h
 )
 
 add_library(lagoon ${LAGOON_SOURCES})
-target_include_directories(lagoon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(lagoon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 option(BUILD_TESTS "Build tests" OFF)
 

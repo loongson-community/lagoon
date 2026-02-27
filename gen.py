@@ -416,8 +416,8 @@ def main() -> None:
         [Insn(line) for line in lines if line.strip()], key=lambda insn: insn.mnemonic
     )
 
-    replace_anchor("lagoon.h", "mnemonic function declarations", generate_declarations(insns))
-    print("Updated lagoon.h with generated function declarations.")
+    replace_anchor("include/lagoon.h", "mnemonic function declarations", generate_declarations(insns))
+    print("Updated include/lagoon.h with generated function declarations.")
 
     replace_anchor("lagoon.c", "mnemonic function definitions", generate_definitions(insns))
     print("Updated lagoon.c with generated function definitions.")
