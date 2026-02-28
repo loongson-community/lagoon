@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
+project(lagoon VERSION 0.0.1)
 project(lagoon LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
