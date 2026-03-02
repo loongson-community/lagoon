@@ -31823,9 +31823,8 @@ void la_insn_to_str(const lagoon_insn_t* insn, char* buf, size_t buf_size)
             snprintf(tmp, sizeof(tmp), "%d", op->simm);
             break;
         case LA_OP_UIMM: {
-                snprintf(tmp, sizeof(tmp), "%u", op->uimm);
-            }
-            break;
+            snprintf(tmp, sizeof(tmp), "%u", op->uimm);
+        } break;
         }
         pos += snprintf(buf + pos, buf_size - (size_t)pos, "%s%s",
             i == 0 ? " " : ", ", tmp);
@@ -31908,8 +31907,7 @@ bool la_is_store_instruction(uint32_t bits)
     if (bits31_24 == 0x31 || bits31_24 == 0x33) {
         uint32_t bits23_20 = (bits >> 20) & 0xF;
         // vstelm has sub-opcodes: .b=0x8, .h=0x4, .w=0x2, .d=0x1
-        if (bits23_20 == 0x1 || bits23_20 == 0x2 ||
-            bits23_20 == 0x4 || bits23_20 == 0x8) {
+        if (bits23_20 == 0x1 || bits23_20 == 0x2 || bits23_20 == 0x4 || bits23_20 == 0x8) {
             return true;
         }
     }

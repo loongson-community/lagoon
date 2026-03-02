@@ -21,3 +21,11 @@ add_test(
     NAME test_load_immediate
     COMMAND test_load_immediate
 )
+
+add_executable(test_label test_label.c ../lagoon.c)
+target_include_directories(test_label PRIVATE .. ../include)
+
+add_test(
+    NAME test_label
+    COMMAND test_label
+)

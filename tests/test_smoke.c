@@ -108,7 +108,8 @@ static int test_disasmbler(uint32_t instruction, const char* expected_output)
 
     char* objdump_output = dasm(instruction);
     if (!objdump_output || !strcmp(objdump_output, "unknown")) {
-        if (objdump_output) free(objdump_output);
+        if (objdump_output)
+            free(objdump_output);
         return 0;
     }
     if (strcmp(objdump_output, expected_output)) {

@@ -12,7 +12,7 @@ typedef int64_t (*func64_t)(void);
 static void* alloc_executable_buffer(size_t size)
 {
     void* buffer = mmap(NULL, size, PROT_READ | PROT_WRITE | PROT_EXEC,
-                        MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+        MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (buffer == MAP_FAILED) {
         return NULL;
     }
@@ -70,12 +70,12 @@ static int test_load_immediate32(void)
 
         if (returned != test_cases[i].value) {
             printf("FAIL: la_load_immediate32 %s: expected 0x%08x (%d), got 0x%08x (%d)\n",
-                   test_cases[i].description, test_cases[i].value, test_cases[i].value,
-                   returned, returned);
+                test_cases[i].description, test_cases[i].value, test_cases[i].value,
+                returned, returned);
             result = 1;
         } else {
             printf("PASS: la_load_immediate32 %s: 0x%08x\n",
-                   test_cases[i].description, test_cases[i].value);
+                test_cases[i].description, test_cases[i].value);
         }
     }
 
@@ -136,12 +136,12 @@ static int test_load_immediate64(void)
 
         if (returned != test_cases[i].value) {
             printf("FAIL: la_load_immediate64 %s: expected 0x%016lx (%ld), got 0x%016lx (%ld)\n",
-                   test_cases[i].description, test_cases[i].value, test_cases[i].value,
-                   returned, returned);
+                test_cases[i].description, test_cases[i].value, test_cases[i].value,
+                returned, returned);
             result = 1;
         } else {
             printf("PASS: la_load_immediate64 %s: 0x%016lx\n",
-                   test_cases[i].description, test_cases[i].value);
+                test_cases[i].description, test_cases[i].value);
         }
     }
 
