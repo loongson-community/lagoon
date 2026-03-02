@@ -1537,8 +1537,8 @@ int smoke_test_all_instructions()
     result += test_disasmbler(*(uint32_t*)buffer, "movcf2gr $a0, $fcc1");
     la_init_assembler(&assembler, buffer, sizeof(buffer));
 
-    la_movfcsr2gr(&assembler, LA_A0, LA_A1);
-    result += test_disasmbler(*(uint32_t*)buffer, "movfcsr2gr $a0, $a1");
+    la_movfcsr2gr(&assembler, LA_A0, LA_FCSR1);
+    result += test_disasmbler(*(uint32_t*)buffer, "movfcsr2gr $a0, $fcsr1");
     la_init_assembler(&assembler, buffer, sizeof(buffer));
 
     la_movfr2cf(&assembler, LA_FCC0, LA_FA1);
@@ -1561,8 +1561,8 @@ int smoke_test_all_instructions()
     result += test_disasmbler(*(uint32_t*)buffer, "movgr2cf $fcc0, $a1");
     la_init_assembler(&assembler, buffer, sizeof(buffer));
 
-    la_movgr2fcsr(&assembler, LA_A0, LA_A1);
-    result += test_disasmbler(*(uint32_t*)buffer, "movgr2fcsr $a0, $a1");
+    la_movgr2fcsr(&assembler, LA_FCSR0, LA_A1);
+    result += test_disasmbler(*(uint32_t*)buffer, "movgr2fcsr $fcsr0, $a1");
     la_init_assembler(&assembler, buffer, sizeof(buffer));
 
     la_movgr2fr_d(&assembler, LA_FA0, LA_A1);

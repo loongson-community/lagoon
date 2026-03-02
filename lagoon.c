@@ -1925,7 +1925,7 @@ void la_movcf2gr(lagoon_assembler_t* assembler, la_gpr_t rd, la_fcc_t cj)
     emit32(assembler, 0x0114dc00 | ((rd & 0x1f) << 0) | ((cj & 0x7) << 5));
 }
 
-void la_movfcsr2gr(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj)
+void la_movfcsr2gr(lagoon_assembler_t* assembler, la_gpr_t rd, la_fcsr_t rj)
 {
     emit32(assembler, 0x0114c800 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5));
 }
@@ -1955,7 +1955,7 @@ void la_movgr2cf(lagoon_assembler_t* assembler, la_fcc_t cd, la_gpr_t rj)
     emit32(assembler, 0x0114d800 | ((cd & 0x7) << 0) | ((rj & 0x1f) << 5));
 }
 
-void la_movgr2fcsr(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj)
+void la_movgr2fcsr(lagoon_assembler_t* assembler, la_fcsr_t rd, la_gpr_t rj)
 {
     emit32(assembler, 0x0114c000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5));
 }
@@ -14064,8 +14064,8 @@ void la_disasm_one(uint32_t word, lagoon_insn_t* insn)
         insn->operand_count = 2;
         insn->operands[0].kind = LA_OP_GPR;
         insn->operands[0].gpr = (((word >> 0) & 0x1f));
-        insn->operands[1].kind = LA_OP_GPR;
-        insn->operands[1].gpr = (((word >> 5) & 0x1f));
+        insn->operands[1].kind = LA_OP_FCSR;
+        insn->operands[1].fcsr = (((word >> 5) & 0x1f));
         return;
     }
     if ((word & 0xfffffc18u) == 0x0114d000u) {
@@ -14116,8 +14116,8 @@ void la_disasm_one(uint32_t word, lagoon_insn_t* insn)
     if ((word & 0xfffffc00u) == 0x0114c000u) {
         insn->mnemonic = "movgr2fcsr";
         insn->operand_count = 2;
-        insn->operands[0].kind = LA_OP_GPR;
-        insn->operands[0].gpr = (((word >> 0) & 0x1f));
+        insn->operands[0].kind = LA_OP_FCSR;
+        insn->operands[0].fcsr = (((word >> 0) & 0x1f));
         insn->operands[1].kind = LA_OP_GPR;
         insn->operands[1].gpr = (((word >> 5) & 0x1f));
         return;
@@ -31818,6 +31818,9 @@ void la_insn_to_str(const lagoon_insn_t* insn, char* buf, size_t buf_size)
             break;
         case LA_OP_SCR:
             snprintf(tmp, sizeof(tmp), "$scr%d", op->scr & 3);
+            break;
+        case LA_OP_FCSR:
+            snprintf(tmp, sizeof(tmp), "$fcsr%d", op->fcsr & 3);
             break;
         case LA_OP_SIMM:
             snprintf(tmp, sizeof(tmp), "%d", op->simm);

@@ -233,6 +233,14 @@ typedef enum {
     LA_SCR_COUNT
 } la_scr_t;
 
+typedef enum {
+    LA_FCSR0 = 0,
+    LA_FCSR1,
+    LA_FCSR2,
+    LA_FCSR3,
+    LA_FCSR_COUNT
+} la_fcsr_t;
+
 typedef struct {
     ptrdiff_t location;
     ptrdiff_t* offsets;
@@ -611,13 +619,13 @@ void la_mod_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t 
 void la_mod_wu(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t rk);
 void la_movcf2fr(lagoon_assembler_t* assembler, la_fpr_t fd, la_fcc_t cj);
 void la_movcf2gr(lagoon_assembler_t* assembler, la_gpr_t rd, la_fcc_t cj);
-void la_movfcsr2gr(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj);
+void la_movfcsr2gr(lagoon_assembler_t* assembler, la_gpr_t rd, la_fcsr_t rj);
 void la_movfr2cf(lagoon_assembler_t* assembler, la_fcc_t cd, la_fpr_t fj);
 void la_movfr2gr_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_fpr_t fj);
 void la_movfr2gr_s(lagoon_assembler_t* assembler, la_gpr_t rd, la_fpr_t fj);
 void la_movfrh2gr_s(lagoon_assembler_t* assembler, la_gpr_t rd, la_fpr_t fj);
 void la_movgr2cf(lagoon_assembler_t* assembler, la_fcc_t cd, la_gpr_t rj);
-void la_movgr2fcsr(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj);
+void la_movgr2fcsr(lagoon_assembler_t* assembler, la_fcsr_t rd, la_gpr_t rj);
 void la_movgr2fr_d(lagoon_assembler_t* assembler, la_fpr_t fd, la_gpr_t rj);
 void la_movgr2fr_w(lagoon_assembler_t* assembler, la_fpr_t fd, la_gpr_t rj);
 void la_movgr2frh_w(lagoon_assembler_t* assembler, la_fpr_t fd, la_gpr_t rj);
@@ -2304,6 +2312,7 @@ typedef enum {
     LA_OP_XVPR,
     LA_OP_FCC,
     LA_OP_SCR,
+    LA_OP_FCSR,
     LA_OP_SIMM,
     LA_OP_UIMM,
 } la_operand_kind_t;
@@ -2317,6 +2326,7 @@ typedef struct {
         la_xvpr_t xvpr;
         la_fcc_t fcc;
         la_scr_t scr;
+        la_fcsr_t fcsr;
         int32_t simm;
         uint32_t uimm;
     };
@@ -2336,7 +2346,5 @@ void la_disasm_one(uint32_t word, lagoon_insn_t* insn);
 void la_insn_to_str(const lagoon_insn_t* insn, char* buf, size_t buf_size);
 
 bool la_is_store_instruction(uint32_t insn);
-
-// clang-format on
 
 #endif // LAGOON_H

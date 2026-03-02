@@ -18,6 +18,7 @@ TEST_ARG_VALUES: dict[str, list[str]] = {
     "T": ["LA_FCC0", "LA_FCC1", "LA_FCC2", "LA_FCC3"],
     "V": ["LA_V0", "LA_V1", "LA_V2", "LA_V3"],
     "X": ["LA_XV0", "LA_XV1", "LA_XV2", "LA_XV3"],
+    "R": ["LA_FCSR0", "LA_FCSR1", "LA_FCSR2", "LA_FCSR3"],
 }
 
 EXPECTED_OUTPUT_VALUES: dict[str, list[str]] = {
@@ -29,6 +30,7 @@ EXPECTED_OUTPUT_VALUES: dict[str, list[str]] = {
     "T": ["$scr0", "$scr1", "$scr2", "$scr3"],
     "V": ["$vr0", "$vr1", "$vr2", "$vr3"],
     "X": ["$xr0", "$xr1", "$xr2", "$xr3"],
+    "R": ["$fcsr0", "$fcsr1", "$fcsr2", "$fcsr3"],
 }
 
 def parse_slot(slot: str) -> tuple[str, str]:
@@ -92,7 +94,12 @@ def slot_name(slot: str) -> str:
     return "r" + slot.lower() if len(slot) == 1 else slot.lower()
 
 
-def slot_type(slot: str) -> str:
+def slot_type(slot: str, mnemonic: str = "") -> str:
+    # Special cases for FCSR instructions
+    if mnemonic == "movgr2fcsr" and slot[0] == "D":
+        return "la_fcsr_t"
+    if mnemonic == "movfcsr2gr" and slot[0] == "J":
+        return "la_fcsr_t"
     return {
         "T": "la_scr_t",
         "C": "la_fcc_t",
@@ -155,32 +162,41 @@ def slot_bits(slot: str) -> int:
         return mask << SLOT_SHIFTS[pos_char]
 
 
-def slot_decode_C_code(slot: str, insn_var: str, operand_var: str) -> str:
+def slot_decode_C_code(slot: str, insn_var: str, operand_var: str, mnemonic: str = "") -> str:
     orig_slot = slot
     slot_base, postproc = parse_slot(slot)
 
-    kind_map: dict[str, str] = {
-        "T": "LA_OP_SCR",
-        "C": "LA_OP_FCC",
-        "F": "LA_OP_FPR",
-        "V": "LA_OP_VPR",
-        "X": "LA_OP_XVPR",
-        "S": "LA_OP_SIMM",
-        "U": "LA_OP_UIMM",
-    }
-    kind = kind_map.get(orig_slot[0], "LA_OP_GPR")
+    # Special cases for FCSR instructions
+    if mnemonic == "movgr2fcsr" and orig_slot[0] == "D":
+        kind = "LA_OP_FCSR"
+        field = "fcsr"
+    elif mnemonic == "movfcsr2gr" and orig_slot[0] == "J":
+        kind = "LA_OP_FCSR"
+        field = "fcsr"
+    else:
+        kind_map: dict[str, str] = {
+            "T": "LA_OP_SCR",
+            "C": "LA_OP_FCC",
+            "F": "LA_OP_FPR",
+            "V": "LA_OP_VPR",
+            "X": "LA_OP_XVPR",
+            "S": "LA_OP_SIMM",
+            "U": "LA_OP_UIMM",
+        }
+        kind = kind_map.get(orig_slot[0], "LA_OP_GPR")
 
-    field_map: dict[str, str] = {
-        "LA_OP_GPR": "gpr",
-        "LA_OP_FPR": "fpr",
-        "LA_OP_VPR": "vpr",
-        "LA_OP_XVPR": "xvpr",
-        "LA_OP_FCC": "fcc",
-        "LA_OP_SCR": "scr",
-        "LA_OP_SIMM": "simm",
-        "LA_OP_UIMM": "uimm",
-    }
-    field = field_map[kind]
+        field_map: dict[str, str] = {
+            "LA_OP_GPR": "gpr",
+            "LA_OP_FPR": "fpr",
+            "LA_OP_VPR": "vpr",
+            "LA_OP_XVPR": "xvpr",
+            "LA_OP_FCC": "fcc",
+            "LA_OP_SCR": "scr",
+            "LA_OP_FCSR": "fcsr",
+            "LA_OP_SIMM": "simm",
+            "LA_OP_UIMM": "uimm",
+        }
+        field = field_map[kind]
 
     if slot_base[0] in "su":
         items = _parse_imm_items(slot_base)
@@ -225,7 +241,7 @@ def slot_decode_C_code(slot: str, insn_var: str, operand_var: str) -> str:
     return "\n".join(lines)
 
 
-def _lookup_slot_value(table: dict[str, list[str]], slot: str, position: int) -> str:
+def _lookup_slot_value(table: dict[str, list[str]], slot: str, position: int, mnemonic: str = "") -> str:
     _, postproc = parse_slot(slot)
     slot_char = slot[0].upper()
     if slot_char in "US":
@@ -234,17 +250,22 @@ def _lookup_slot_value(table: dict[str, list[str]], slot: str, position: int) ->
         elif postproc and postproc[0] == "s":
             return f"{1 << int(postproc[1:])}"
         return "1"
+    # Special cases for FCSR instructions
+    if mnemonic == "movgr2fcsr" and slot_char == "D":
+        slot_char = "R"
+    elif mnemonic == "movfcsr2gr" and slot_char == "J":
+        slot_char = "R"
     assert slot_char in table, f"Unknown slot type: {slot}"
     values = table[slot_char]
     return values[min(position, len(values) - 1)]
 
 
-def get_test_argument_for_slot(slot: str, position: int) -> str:
-    return _lookup_slot_value(TEST_ARG_VALUES, slot, position)
+def get_test_argument_for_slot(slot: str, position: int, mnemonic: str = "") -> str:
+    return _lookup_slot_value(TEST_ARG_VALUES, slot, position, mnemonic)
 
 
-def get_expected_output_for_slot(slot: str, position: int) -> str:
-    return _lookup_slot_value(EXPECTED_OUTPUT_VALUES, slot, position)
+def get_expected_output_for_slot(slot: str, position: int, mnemonic: str = "") -> str:
+    return _lookup_slot_value(EXPECTED_OUTPUT_VALUES, slot, position, mnemonic)
 
 
 def map_orig_fmt_to_real_slot_positions(insn: Insn, orig_fmt_slots: list[str]) -> list[int]:
@@ -288,7 +309,7 @@ def generate_declarations(insns: list[Insn]) -> str:
         func_name = f"la_{insn.mnemonic}"
         params = ", ".join(
             ["lagoon_assembler_t* assembler"]
-            + [f"{slot_type(slot)} {slot_name(slot)}" for slot in insn.slots]
+            + [f"{slot_type(slot, insn.mnemonic)} {slot_name(slot)}" for slot in insn.slots]
         )
         lines.append(f"void {func_name}({params});")
     return "\n".join(lines)
@@ -300,7 +321,7 @@ def generate_definitions(insns: list[Insn]) -> str:
         func_name = f"la_{insn.mnemonic}"
         params = ", ".join(
             ["lagoon_assembler_t* assembler"]
-            + [f"{slot_type(slot)} {slot_name(slot)}" for slot in insn.slots]
+            + [f"{slot_type(slot, insn.mnemonic)} {slot_name(slot)}" for slot in insn.slots]
         )
         raw = " | ".join(
             [f"0x{insn.encoding:08x}"]
@@ -337,7 +358,7 @@ def generate_disasm_cases(insns: list[Insn]) -> str:
         operand_lines: list[str] = []
         for i, slot in enumerate(insn.slots):
             operand_lines.append(
-                slot_decode_C_code(slot, "word", f"insn->operands[{i}]")
+                slot_decode_C_code(slot, "word", f"insn->operands[{i}]", insn.mnemonic)
             )
         operand_count = len(insn.slots)
         operands_code = (
@@ -360,7 +381,7 @@ def generate_smoke_tests(insns: list[Insn]) -> str:
 
         args: list[str] = []
         for i, slot in enumerate(insn.slots):
-            args.append(get_test_argument_for_slot(slot, i))
+            args.append(get_test_argument_for_slot(slot, i, insn.mnemonic))
 
         if insn.slots:
             if "orig_fmt" in insn.attributes:
@@ -374,13 +395,13 @@ def generate_smoke_tests(insns: list[Insn]) -> str:
                 expected_parts: list[str] = []
                 for pos_in_orig_fmt, original_slot_pos in enumerate(orig_fmt_positions):
                     expected_parts.append(
-                        get_expected_output_for_slot(insn.slots[original_slot_pos], original_slot_pos)
+                        get_expected_output_for_slot(insn.slots[original_slot_pos], original_slot_pos, insn.mnemonic)
                     )
             else:
                 expected_parts = []
                 for pos in range(len(insn.slots)):
                     expected_parts.append(
-                        get_expected_output_for_slot(insn.slots[pos], pos)
+                        get_expected_output_for_slot(insn.slots[pos], pos, insn.mnemonic)
                     )
 
             expected_disasm = (
