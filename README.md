@@ -30,6 +30,7 @@ lagoon_label_t loop = {0};
 la_bind(&as, &loop);
 la_addi_d(&as, LA_A0, LA_A0, -1);
 la_bnez(&as, LA_A0, la_label(&as, &loop));
+la_label_free(&as, &loop);
 ```
 
 ### Disassembler
