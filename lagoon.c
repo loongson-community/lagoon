@@ -4262,6 +4262,11 @@ void la_vmaxi_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32
     emit32(assembler, 0x72950000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
+void la_vmepatmsk_v(lagoon_assembler_t* assembler, la_vpr_t vd, uint32_t uj5, uint32_t uk5)
+{
+    emit32(assembler, 0x729b8000 | ((vd & 0x1f) << 0) | ((uj5 & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
+}
+
 void la_vmin_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_t vk)
 {
     emit32(assembler, 0x70720000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((vk & 0x1f) << 10));
@@ -8421,6 +8426,11 @@ void la_xvmaxi_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int3
 void la_xvmaxi_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
     emit32(assembler, 0x76950000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
+}
+
+void la_xvmepatmsk_v(lagoon_assembler_t* assembler, la_xvpr_t xd, uint32_t uj5, uint32_t uk5)
+{
+    emit32(assembler, 0x769b8000 | ((xd & 0x1f) << 0) | ((uj5 & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvmin_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_xvpr_t xk)
@@ -18923,6 +18933,17 @@ void la_disasm_one(uint32_t word, lagoon_insn_t* insn)
         insn->operands[2].uimm = (((word >> 10) & 0x1f));
         return;
     }
+    if ((word & 0xffff8000u) == 0x729b8000u) {
+        insn->mnemonic = "vmepatmsk.v";
+        insn->operand_count = 3;
+        insn->operands[0].kind = LA_OP_VPR;
+        insn->operands[0].vpr = (((word >> 0) & 0x1f));
+        insn->operands[1].kind = LA_OP_UIMM;
+        insn->operands[1].uimm = (((word >> 5) & 0x1f));
+        insn->operands[2].kind = LA_OP_UIMM;
+        insn->operands[2].uimm = (((word >> 10) & 0x1f));
+        return;
+    }
     if ((word & 0xffff8000u) == 0x70720000u) {
         insn->mnemonic = "vmin.b";
         insn->operand_count = 3;
@@ -27618,6 +27639,17 @@ void la_disasm_one(uint32_t word, lagoon_insn_t* insn)
         insn->operands[0].xvpr = (((word >> 0) & 0x1f));
         insn->operands[1].kind = LA_OP_XVPR;
         insn->operands[1].xvpr = (((word >> 5) & 0x1f));
+        insn->operands[2].kind = LA_OP_UIMM;
+        insn->operands[2].uimm = (((word >> 10) & 0x1f));
+        return;
+    }
+    if ((word & 0xffff8000u) == 0x769b8000u) {
+        insn->mnemonic = "xvmepatmsk.v";
+        insn->operand_count = 3;
+        insn->operands[0].kind = LA_OP_XVPR;
+        insn->operands[0].xvpr = (((word >> 0) & 0x1f));
+        insn->operands[1].kind = LA_OP_UIMM;
+        insn->operands[1].uimm = (((word >> 5) & 0x1f));
         insn->operands[2].kind = LA_OP_UIMM;
         insn->operands[2].uimm = (((word >> 10) & 0x1f));
         return;

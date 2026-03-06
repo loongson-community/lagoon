@@ -3401,6 +3401,10 @@ int smoke_test_all_instructions()
     result += test_disasmbler(*(uint32_t*)buffer, "vmaxi.wu $vr0, $vr1, 1");
     la_init_assembler(&assembler, buffer, sizeof(buffer));
 
+    la_vmepatmsk_v(&assembler, LA_V0, 1, 1);
+    result += test_disasmbler(*(uint32_t*)buffer, "vmepatmsk.v $vr0, 1, 1");
+    la_init_assembler(&assembler, buffer, sizeof(buffer));
+
     la_vmin_b(&assembler, LA_V0, LA_V1, LA_V2);
     result += test_disasmbler(*(uint32_t*)buffer, "vmin.b $vr0, $vr1, $vr2");
     la_init_assembler(&assembler, buffer, sizeof(buffer));
@@ -6723,6 +6727,10 @@ int smoke_test_all_instructions()
 
     la_xvmaxi_wu(&assembler, LA_XV0, LA_XV1, 1);
     result += test_disasmbler(*(uint32_t*)buffer, "xvmaxi.wu $xr0, $xr1, 1");
+    la_init_assembler(&assembler, buffer, sizeof(buffer));
+
+    la_xvmepatmsk_v(&assembler, LA_XV0, 1, 1);
+    result += test_disasmbler(*(uint32_t*)buffer, "xvmepatmsk.v $xr0, 1, 1");
     la_init_assembler(&assembler, buffer, sizeof(buffer));
 
     la_xvmin_b(&assembler, LA_XV0, LA_XV1, LA_XV2);

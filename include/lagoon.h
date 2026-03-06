@@ -1085,6 +1085,7 @@ void la_vmaxi_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t
 void la_vmaxi_hu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5);
 void la_vmaxi_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5);
 void la_vmaxi_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5);
+void la_vmepatmsk_v(lagoon_assembler_t* assembler, la_vpr_t vd, uint32_t uj5, uint32_t uk5);
 void la_vmin_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_t vk);
 void la_vmin_bu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_t vk);
 void la_vmin_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_t vk);
@@ -1916,6 +1917,7 @@ void la_xvmaxi_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int3
 void la_xvmaxi_hu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5);
 void la_xvmaxi_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5);
 void la_xvmaxi_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5);
+void la_xvmepatmsk_v(lagoon_assembler_t* assembler, la_xvpr_t xd, uint32_t uj5, uint32_t uk5);
 void la_xvmin_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_xvpr_t xk);
 void la_xvmin_bu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_xvpr_t xk);
 void la_xvmin_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_xvpr_t xk);
