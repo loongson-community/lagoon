@@ -2,7 +2,7 @@
 
 A lightweight LoongArch runtime assembler and disassembler library written in C.
 
-Mnemonic functions are generated from [loongson-community/loongarch-opcodes](https://github.com/loongson-community/loongarch-opcodes).
+Mnemonic functions are generated from [loongson-community/loongarch-opcodes](https://github.com/loongson-community/loongarch-opcodes). Documentation comments for LSX/LASX opcodes are extracted from [unofficial-loongarch-intrinsics-guide](https://github.com/jiegec/unofficial-loongarch-intrinsics-guide).
 
 ## Usage
 
@@ -65,12 +65,16 @@ gcc -c lagoon.c -o lagoon.o
 
 ## Regenerating
 
-After updating the `loongarch-opcodes` submodule:
+After updating submodules:
 
 ```bash
 git submodule update --init
 ./gen.py
 ```
+
+This regenerates `include/lagoon.h` and `lagoon.c` from:
+- `loongarch-opcodes` - instruction mnemonics and encodings
+- `unofficial-loongarch-intrinsics-guide` - LSX/LASX documentation
 
 ## License
 
