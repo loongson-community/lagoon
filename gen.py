@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import json
 import os
 import re
+import subprocess
 
 SLOT_SHIFTS: dict[str, int] = {"d": 0, "j": 5, "k": 10, "a": 15, "m": 16, "n": 18}
 
@@ -302,8 +304,60 @@ def replace_anchor(filepath: str, anchor_name: str, content: str, separator: str
     with open(filepath, "w", encoding="utf-8") as f:
         f.write(new_text)
 
+def get_declaration_comments() -> dict[str, str]:
+    intrinsics_json = "unofficial-loongarch-intrinsics-guide/intrinsics.json"
+    if not os.path.exists(intrinsics_json):
+        subprocess.run(
+            ["python3", "unofficial-loongarch-intrinsics-guide/main.py"],
+            check=True,
+        )
+
+    with open(intrinsics_json, "r", encoding="utf-8") as f:
+        intrinsics = json.load(f)
+
+    comments: dict[str, str] = {}
+    for entry in intrinsics:
+        if not entry.get("instructions"):
+            continue
+        instr_name = entry["instructions"][0].replace(".", "_")
+        content = entry.get("content", "")
+        c_intrinsic = entry.get("c_intrinsic", "")
+
+        desc_match = re.search(
+            r"### Description\s*\n+(.*?)(?=\n###|\Z)", content, re.DOTALL
+        )
+        description = desc_match.group(1).strip() if desc_match else ""
+
+        op_match = re.search(
+            r"### Operation\s*\n+```c\+\+\n(.*?)```", content, re.DOTALL
+        )
+        operation = op_match.group(1).strip() if op_match else ""
+
+        comment_lines = ["\n/**"]
+        if description:
+            if c_intrinsic:
+                comment_lines.append(f" * `{c_intrinsic}`")
+                comment_lines.append(" *")
+        
+            for line in description.split("\n"):
+                line = line.strip()
+                if line:
+                    comment_lines.append(f" * {line}")
+
+            if operation and False: # exclude pseudo code for now
+                comment_lines.append(" *")
+                comment_lines.append(" * Operation:")
+                comment_lines.append(" * ```c")
+                for line in operation.split("\n"):
+                    comment_lines.append(f" * {line}")
+                comment_lines.append(" * ```")
+            comment_lines.append(" */")
+            comments[instr_name] = "\n".join(comment_lines)
+
+    return comments
 
 def generate_declarations(insns: list[Insn]) -> str:
+    comments = get_declaration_comments()
     lines: list[str] = []
     for insn in insns:
         func_name = f"la_{insn.mnemonic}"
@@ -311,6 +365,8 @@ def generate_declarations(insns: list[Insn]) -> str:
             ["lagoon_assembler_t* assembler"]
             + [f"{slot_type(slot, insn.mnemonic)} {slot_name(slot)}" for slot in insn.slots]
         )
+        if insn.mnemonic in comments:
+            lines.append(comments[insn.mnemonic])
         lines.append(f"void {func_name}({params});")
     return "\n".join(lines)
 
