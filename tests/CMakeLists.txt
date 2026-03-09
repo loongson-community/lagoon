@@ -6,14 +6,6 @@ add_test(
     COMMAND test_smoke
 )
 
-add_executable(test_is_store test_is_store.c ../lagoon.c)
-target_include_directories(test_is_store PRIVATE .. ../include)
-
-add_test(
-    NAME test_is_store
-    COMMAND test_is_store
-)
-
 add_executable(test_load_immediate test_load_immediate.c ../lagoon.c)
 target_include_directories(test_load_immediate PRIVATE .. ../include)
 

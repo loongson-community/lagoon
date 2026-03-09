@@ -2347,6 +2347,4 @@ typedef struct {
 void la_disasm_one(uint32_t word, lagoon_insn_t* insn);
 void la_insn_to_str(const lagoon_insn_t* insn, char* buf, size_t buf_size);
 
-bool la_is_store_instruction(uint32_t insn);
-
 #endif // LAGOON_H
