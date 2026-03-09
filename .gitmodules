@@ -1,3 +1,6 @@
 [submodule "loongarch-opcodes"]
 	path = loongarch-opcodes
 	url = https://github.com/loongson-community/loongarch-opcodes.git
+[submodule "unofficial-loongarch-intrinsics-guide"]
+	path = unofficial-loongarch-intrinsics-guide
+	url = https://github.com/jiegec/unofficial-loongarch-intrinsics-guide
