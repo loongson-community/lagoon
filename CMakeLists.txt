@@ -15,6 +15,7 @@ set(LAGOON_HEADERS
 
 add_library(lagoon ${LAGOON_SOURCES})
 target_include_directories(lagoon PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_compile_definitions(lagoon PRIVATE $<$<CONFIG:Debug>:LA_DEBUG>)
 
 option(BUILD_TESTS "Build tests" OFF)
 

@@ -164,6 +164,31 @@ def slot_bits(slot: str) -> int:
         return mask << SLOT_SHIFTS[pos_char]
 
 
+def slot_total_bits(slot: str) -> int:
+    """Calculate total bit width of an immediate slot."""
+    slot_base, _ = parse_slot(slot)
+    if slot_base[0] in "su":
+        items = _parse_imm_items(slot_base)
+        return sum(size for _, size in items)
+    return 0
+
+
+def slot_assertion_code(slot: str, name: str) -> str:
+    """Generate range assertion code for an immediate slot."""
+    slot_upper = slot[0] if slot else ""
+    if slot_upper not in "SU":
+        return ""
+
+    total_bits = slot_total_bits(slot)
+    if total_bits == 0:
+        return ""
+
+    if slot_upper == "S":
+        return f"    LA_ASSERT_SIGNED_RANGE({name}, {total_bits});\n"
+    else:
+        return f"    LA_ASSERT_UNSIGNED_RANGE({name}, {total_bits});\n"
+
+
 def slot_decode_C_code(slot: str, insn_var: str, operand_var: str, mnemonic: str = "") -> str:
     orig_slot = slot
     slot_base, postproc = parse_slot(slot)
@@ -384,6 +409,7 @@ def generate_definitions(insns: list[Insn]) -> str:
             + [slot_action_C_code(slot, slot_name(slot)) for slot in insn.slots]
         )
         postproc_code = ""
+        assertion_code = ""
         for slot in insn.slots:
             _, postproc = parse_slot(slot)
             if postproc:
@@ -393,12 +419,13 @@ def generate_definitions(insns: list[Insn]) -> str:
                     postproc_code += f"    {slot_name(slot)} >>= {int(postproc[1:])};\n"
                 else:
                     assert False, f"Unknown postproc: {postproc}"
+            assertion_code += slot_assertion_code(slot, slot_name(slot))
 
         functions.append(
             f"""\
 void {func_name}({params})
 {{
-{postproc_code}    emit32(assembler, {raw});
+{postproc_code}{assertion_code}    emit32(assembler, {raw});
 }}"""
         )
     return "\n\n".join(functions)

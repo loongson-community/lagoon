@@ -5,6 +5,22 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#ifdef LA_DEBUG
+#include <assert.h>
+
+#define LA_ASSERT_SIGNED_RANGE(val, bits) \
+    assert((val) >= (-(1LL << ((bits) - 1))) && (val) < (1LL << ((bits) - 1)))
+
+#define LA_ASSERT_UNSIGNED_RANGE(val, bits) \
+    assert((val) >= 0 && (uint64_t)(val) < (1ULL << (bits)))
+
+#else
+
+#define LA_ASSERT_SIGNED_RANGE(val, bits) ((void)0)
+#define LA_ASSERT_UNSIGNED_RANGE(val, bits) ((void)0)
+
+#endif
+
 typedef enum {
     LA_ZERO = 0,
     LA_RA,

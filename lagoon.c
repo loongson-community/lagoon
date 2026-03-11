@@ -215,44 +215,52 @@ void la_add_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t 
 
 void la_addi_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x02c00000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_addi_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x02800000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_addu12i_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x00298000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_addu12i_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x00290000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_addu16i_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk16)
 {
+    LA_ASSERT_SIGNED_RANGE(sk16, 16);
     emit32(assembler, 0x10000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk16 & 0xffff) << 10));
 }
 
 void la_alsl_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t rk, uint32_t ua2pp1)
 {
     ua2pp1 -= 1;
+    LA_ASSERT_UNSIGNED_RANGE(ua2pp1, 2);
     emit32(assembler, 0x002c0000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ua2pp1 & 0x3) << 15));
 }
 
 void la_alsl_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t rk, uint32_t ua2pp1)
 {
     ua2pp1 -= 1;
+    LA_ASSERT_UNSIGNED_RANGE(ua2pp1, 2);
     emit32(assembler, 0x00040000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ua2pp1 & 0x3) << 15));
 }
 
 void la_alsl_wu(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t rk, uint32_t ua2pp1)
 {
     ua2pp1 -= 1;
+    LA_ASSERT_UNSIGNED_RANGE(ua2pp1, 2);
     emit32(assembler, 0x00060000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ua2pp1 & 0x3) << 15));
 }
 
@@ -523,6 +531,7 @@ void la_and(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t rk
 
 void la_andi(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk12)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk12, 12);
     emit32(assembler, 0x03400000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk12 & 0xfff) << 10));
 }
 
@@ -533,111 +542,137 @@ void la_andn(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t r
 
 void la_armadc_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x00380010 | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armadd_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x00370010 | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armand_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x00390010 | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armmfflag(lagoon_assembler_t* assembler, la_gpr_t rd, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x005c0040 | ((rd & 0x1f) << 0) | ((uk8 & 0xff) << 10));
 }
 
 void la_armmov_d(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x003fc01e | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_armmov_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x003fc01d | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_armmove(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x00364000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_armmtflag(lagoon_assembler_t* assembler, la_gpr_t rd, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x005c0060 | ((rd & 0x1f) << 0) | ((uk8 & 0xff) << 10));
 }
 
 void la_armnot_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x003fc01c | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_armor_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x00398010 | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armrotr_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x003c0010 | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armrotri_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk5, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x003e0010 | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armrrx_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x003fc01f | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_armsbc_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x00388010 | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armsll_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x003a8010 | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armslli_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk5, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x003c8010 | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armsra_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x003b8010 | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armsrai_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk5, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x003d8010 | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armsrl_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x003b0010 | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armsrli_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk5, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x003d0010 | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armsub_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x00378010 | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
 void la_armxor_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk, uint32_t ud4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud4, 4);
     emit32(assembler, 0x003a0010 | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ud4 & 0xf) << 0));
 }
 
@@ -654,42 +689,49 @@ void la_asrtle_d(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk)
 void la_b(lagoon_assembler_t* assembler, int32_t sd10k16ps2)
 {
     sd10k16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sd10k16ps2, 26);
     emit32(assembler, 0x50000000 | (((sd10k16ps2 >> 16) & 0x3ff) << 0) | ((sd10k16ps2 & 0xffff) << 10));
 }
 
 void la_bceqz(lagoon_assembler_t* assembler, la_fcc_t cj, int32_t sd5k16ps2)
 {
     sd5k16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sd5k16ps2, 21);
     emit32(assembler, 0x48000000 | ((cj & 0x7) << 5) | (((sd5k16ps2 >> 16) & 0x1f) << 0) | ((sd5k16ps2 & 0xffff) << 10));
 }
 
 void la_bcnez(lagoon_assembler_t* assembler, la_fcc_t cj, int32_t sd5k16ps2)
 {
     sd5k16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sd5k16ps2, 21);
     emit32(assembler, 0x48000100 | ((cj & 0x7) << 5) | (((sd5k16ps2 >> 16) & 0x1f) << 0) | ((sd5k16ps2 & 0xffff) << 10));
 }
 
 void la_beq(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rd, int32_t sk16ps2)
 {
     sk16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk16ps2, 16);
     emit32(assembler, 0x58000000 | ((rj & 0x1f) << 5) | ((rd & 0x1f) << 0) | ((sk16ps2 & 0xffff) << 10));
 }
 
 void la_beqz(lagoon_assembler_t* assembler, la_gpr_t rj, int32_t sd5k16ps2)
 {
     sd5k16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sd5k16ps2, 21);
     emit32(assembler, 0x40000000 | ((rj & 0x1f) << 5) | (((sd5k16ps2 >> 16) & 0x1f) << 0) | ((sd5k16ps2 & 0xffff) << 10));
 }
 
 void la_bge(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rd, int32_t sk16ps2)
 {
     sk16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk16ps2, 16);
     emit32(assembler, 0x64000000 | ((rj & 0x1f) << 5) | ((rd & 0x1f) << 0) | ((sk16ps2 & 0xffff) << 10));
 }
 
 void la_bgeu(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rd, int32_t sk16ps2)
 {
     sk16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk16ps2, 16);
     emit32(assembler, 0x6c000000 | ((rj & 0x1f) << 5) | ((rd & 0x1f) << 0) | ((sk16ps2 & 0xffff) << 10));
 }
 
@@ -716,70 +758,88 @@ void la_bitrev_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj)
 void la_bl(lagoon_assembler_t* assembler, int32_t sd10k16ps2)
 {
     sd10k16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sd10k16ps2, 26);
     emit32(assembler, 0x54000000 | (((sd10k16ps2 >> 16) & 0x3ff) << 0) | ((sd10k16ps2 & 0xffff) << 10));
 }
 
 void la_blt(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rd, int32_t sk16ps2)
 {
     sk16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk16ps2, 16);
     emit32(assembler, 0x60000000 | ((rj & 0x1f) << 5) | ((rd & 0x1f) << 0) | ((sk16ps2 & 0xffff) << 10));
 }
 
 void la_bltu(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rd, int32_t sk16ps2)
 {
     sk16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk16ps2, 16);
     emit32(assembler, 0x68000000 | ((rj & 0x1f) << 5) | ((rd & 0x1f) << 0) | ((sk16ps2 & 0xffff) << 10));
 }
 
 void la_bne(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rd, int32_t sk16ps2)
 {
     sk16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk16ps2, 16);
     emit32(assembler, 0x5c000000 | ((rj & 0x1f) << 5) | ((rd & 0x1f) << 0) | ((sk16ps2 & 0xffff) << 10));
 }
 
 void la_bnez(lagoon_assembler_t* assembler, la_gpr_t rj, int32_t sd5k16ps2)
 {
     sd5k16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sd5k16ps2, 21);
     emit32(assembler, 0x44000000 | ((rj & 0x1f) << 5) | (((sd5k16ps2 >> 16) & 0x1f) << 0) | ((sd5k16ps2 & 0xffff) << 10));
 }
 
 void la_break(lagoon_assembler_t* assembler, uint32_t ud15)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud15, 15);
     emit32(assembler, 0x002a0000 | ((ud15 & 0x7fff) << 0));
 }
 
 void la_bstrins_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t um6, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(um6, 6);
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x00800000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((um6 & 0x3f) << 16) | ((uk6 & 0x3f) << 10));
 }
 
 void la_bstrins_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t um5, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(um5, 5);
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x00600000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((um5 & 0x1f) << 16) | ((uk5 & 0x1f) << 10));
 }
 
 void la_bstrpick_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t um6, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(um6, 6);
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x00c00000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((um6 & 0x3f) << 16) | ((uk6 & 0x3f) << 10));
 }
 
 void la_bstrpick_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t um5, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(um5, 5);
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x00608000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((um5 & 0x1f) << 16) | ((uk5 & 0x1f) << 10));
 }
 
 void la_bytepick_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t rk, uint32_t ua3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ua3, 3);
     emit32(assembler, 0x000c0000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ua3 & 0x7) << 15));
 }
 
 void la_bytepick_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t rk, uint32_t ua2)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ua2, 2);
     emit32(assembler, 0x00080000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10) | ((ua2 & 0x3) << 15));
 }
 
 void la_cacop(lagoon_assembler_t* assembler, uint32_t ud5, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud5, 5);
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x06000000 | ((ud5 & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
@@ -850,6 +910,7 @@ void la_crcc_w_w_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_g
 
 void la_csrxchg(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk14)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk14, 14);
     emit32(assembler, 0x04000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk14 & 0x3fff) << 10));
 }
 
@@ -875,11 +936,13 @@ void la_ctz_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj)
 
 void la_dbar(lagoon_assembler_t* assembler, uint32_t ud15)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud15, 15);
     emit32(assembler, 0x38720000 | ((ud15 & 0x7fff) << 0));
 }
 
 void la_dbcl(lagoon_assembler_t* assembler, uint32_t ud15)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud15, 15);
     emit32(assembler, 0x002a8000 | ((ud15 & 0x7fff) << 0));
 }
 
@@ -1235,11 +1298,13 @@ void la_ffint_s_w(lagoon_assembler_t* assembler, la_fpr_t fd, la_fpr_t fj)
 
 void la_fld_d(lagoon_assembler_t* assembler, la_fpr_t fd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2b800000 | ((fd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_fld_s(lagoon_assembler_t* assembler, la_fpr_t fd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2b000000 | ((fd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
@@ -1470,11 +1535,13 @@ void la_fsqrt_s(lagoon_assembler_t* assembler, la_fpr_t fd, la_fpr_t fj)
 
 void la_fst_d(lagoon_assembler_t* assembler, la_fpr_t fd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2bc00000 | ((fd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_fst_s(lagoon_assembler_t* assembler, la_fpr_t fd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2b400000 | ((fd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
@@ -1620,6 +1687,7 @@ void la_ftintrz_w_s(lagoon_assembler_t* assembler, la_fpr_t fd, la_fpr_t fj)
 
 void la_gcsrxchg(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk14)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk14, 14);
     emit32(assembler, 0x05000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk14 & 0x3fff) << 10));
 }
 
@@ -1655,21 +1723,25 @@ void la_gtlbwr(lagoon_assembler_t* assembler)
 
 void la_hvcl(lagoon_assembler_t* assembler, uint32_t ud15)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud15, 15);
     emit32(assembler, 0x002b8000 | ((ud15 & 0x7fff) << 0));
 }
 
 void la_ibar(lagoon_assembler_t* assembler, uint32_t ud15)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud15, 15);
     emit32(assembler, 0x38728000 | ((ud15 & 0x7fff) << 0));
 }
 
 void la_idle(lagoon_assembler_t* assembler, uint32_t ud15)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud15, 15);
     emit32(assembler, 0x06488000 | ((ud15 & 0x7fff) << 0));
 }
 
 void la_invtlb(lagoon_assembler_t* assembler, uint32_t ud5, la_gpr_t rj, la_gpr_t rk)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud5, 5);
     emit32(assembler, 0x06498000 | ((ud5 & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10));
 }
 
@@ -1716,58 +1788,69 @@ void la_iocsrwr_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj)
 void la_jirl(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk16ps2)
 {
     sk16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk16ps2, 16);
     emit32(assembler, 0x4c000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk16ps2 & 0xffff) << 10));
 }
 
 void la_jiscr0(lagoon_assembler_t* assembler, int32_t sd5k16ps2)
 {
     sd5k16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sd5k16ps2, 21);
     emit32(assembler, 0x48000200 | (((sd5k16ps2 >> 16) & 0x1f) << 0) | ((sd5k16ps2 & 0xffff) << 10));
 }
 
 void la_jiscr1(lagoon_assembler_t* assembler, int32_t sd5k16ps2)
 {
     sd5k16ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sd5k16ps2, 21);
     emit32(assembler, 0x48000300 | (((sd5k16ps2 >> 16) & 0x1f) << 0) | ((sd5k16ps2 & 0xffff) << 10));
 }
 
 void la_ld_b(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x28000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_ld_bu(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2a000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_ld_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x28c00000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_ld_h(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x28400000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_ld_hu(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2a400000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_ld_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x28800000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_ld_wu(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2a800000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_lddir(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x06400000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -1793,11 +1876,13 @@ void la_ldgt_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t
 
 void la_ldl_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2e800000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_ldl_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2e000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
@@ -1823,28 +1908,33 @@ void la_ldle_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t
 
 void la_ldpte(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x06440000 | ((rj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_ldptr_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk14ps2)
 {
     sk14ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk14ps2, 14);
     emit32(assembler, 0x26000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk14ps2 & 0x3fff) << 10));
 }
 
 void la_ldptr_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk14ps2)
 {
     sk14ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk14ps2, 14);
     emit32(assembler, 0x24000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk14ps2 & 0x3fff) << 10));
 }
 
 void la_ldr_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2ec00000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_ldr_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2e400000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
@@ -1886,12 +1976,14 @@ void la_ldx_wu(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t
 void la_ll_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk14ps2)
 {
     sk14ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk14ps2, 14);
     emit32(assembler, 0x22000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk14ps2 & 0x3fff) << 10));
 }
 
 void la_ll_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk14ps2)
 {
     sk14ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk14ps2, 14);
     emit32(assembler, 0x20000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk14ps2 & 0x3fff) << 10));
 }
 
@@ -1907,16 +1999,19 @@ void la_llacq_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj)
 
 void la_lu12i_w(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t sj20)
 {
+    LA_ASSERT_SIGNED_RANGE(sj20, 20);
     emit32(assembler, 0x14000000 | ((rd & 0x1f) << 0) | ((sj20 & 0xfffff) << 5));
 }
 
 void la_lu32i_d(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t sj20)
 {
+    LA_ASSERT_SIGNED_RANGE(sj20, 20);
     emit32(assembler, 0x16000000 | ((rd & 0x1f) << 0) | ((sj20 & 0xfffff) << 5));
 }
 
 void la_lu52i_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x03000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
@@ -2072,6 +2167,7 @@ void la_or(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t rk)
 
 void la_ori(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk12)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk12, 12);
     emit32(assembler, 0x03800000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk12 & 0xfff) << 10));
 }
 
@@ -2082,31 +2178,38 @@ void la_orn(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t rk
 
 void la_pcaddi(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t sj20)
 {
+    LA_ASSERT_SIGNED_RANGE(sj20, 20);
     emit32(assembler, 0x18000000 | ((rd & 0x1f) << 0) | ((sj20 & 0xfffff) << 5));
 }
 
 void la_pcaddu12i(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t sj20)
 {
+    LA_ASSERT_SIGNED_RANGE(sj20, 20);
     emit32(assembler, 0x1c000000 | ((rd & 0x1f) << 0) | ((sj20 & 0xfffff) << 5));
 }
 
 void la_pcaddu18i(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t sj20)
 {
+    LA_ASSERT_SIGNED_RANGE(sj20, 20);
     emit32(assembler, 0x1e000000 | ((rd & 0x1f) << 0) | ((sj20 & 0xfffff) << 5));
 }
 
 void la_pcalau12i(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t sj20)
 {
+    LA_ASSERT_SIGNED_RANGE(sj20, 20);
     emit32(assembler, 0x1a000000 | ((rd & 0x1f) << 0) | ((sj20 & 0xfffff) << 5));
 }
 
 void la_preld(lagoon_assembler_t* assembler, uint32_t ud5, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud5, 5);
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2ac00000 | ((ud5 & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_preldx(lagoon_assembler_t* assembler, uint32_t ud5, la_gpr_t rj, la_gpr_t rk)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud5, 5);
     emit32(assembler, 0x382c0000 | ((ud5 & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((rk & 0x1f) << 10));
 }
 
@@ -2132,21 +2235,25 @@ void la_rcr_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t 
 
 void la_rcri_b(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x00502000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_rcri_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x00510000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_rcri_h(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x00504000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_rcri_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x00508000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -2217,21 +2324,25 @@ void la_rotr_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t
 
 void la_rotri_b(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x004c2000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_rotri_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x004d0000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_rotri_h(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x004c4000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_rotri_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x004c8000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -2258,6 +2369,7 @@ void la_sbc_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t 
 void la_sc_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk14ps2)
 {
     sk14ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk14ps2, 14);
     emit32(assembler, 0x23000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk14ps2 & 0x3fff) << 10));
 }
 
@@ -2269,6 +2381,7 @@ void la_sc_q(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rk, la_gpr_t r
 void la_sc_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk14ps2)
 {
     sk14ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk14ps2, 14);
     emit32(assembler, 0x21000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk14ps2 & 0x3fff) << 10));
 }
 
@@ -2284,11 +2397,13 @@ void la_screl_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj)
 
 void la_setarmj(lagoon_assembler_t* assembler, la_gpr_t rd, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x0036c000 | ((rd & 0x1f) << 0) | ((uk4 & 0xf) << 10));
 }
 
 void la_setx86j(lagoon_assembler_t* assembler, la_gpr_t rd, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x00368000 | ((rd & 0x1f) << 0) | ((uk4 & 0xf) << 10));
 }
 
@@ -2314,11 +2429,13 @@ void la_sll_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t 
 
 void la_slli_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x00410000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_slli_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x00408000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -2329,6 +2446,7 @@ void la_slt(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t rk
 
 void la_slti(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x02000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
@@ -2339,6 +2457,7 @@ void la_sltu(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t r
 
 void la_sltui(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x02400000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
@@ -2354,11 +2473,13 @@ void la_sra_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t 
 
 void la_srai_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x00490000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_srai_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x00488000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -2374,31 +2495,37 @@ void la_srl_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t 
 
 void la_srli_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x00450000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_srli_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x00448000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_st_b(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x29000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_st_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x29c00000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_st_h(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x29400000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_st_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x29800000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
@@ -2424,11 +2551,13 @@ void la_stgt_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t
 
 void la_stl_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2f800000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_stl_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2f000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
@@ -2455,22 +2584,26 @@ void la_stle_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t
 void la_stptr_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk14ps2)
 {
     sk14ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk14ps2, 14);
     emit32(assembler, 0x27000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk14ps2 & 0x3fff) << 10));
 }
 
 void la_stptr_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk14ps2)
 {
     sk14ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk14ps2, 14);
     emit32(assembler, 0x25000000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk14ps2 & 0x3fff) << 10));
 }
 
 void la_str_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2fc00000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_str_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2f400000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
@@ -2506,6 +2639,7 @@ void la_sub_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t 
 
 void la_syscall(lagoon_assembler_t* assembler, uint32_t ud15)
 {
+    LA_ASSERT_UNSIGNED_RANGE(ud15, 15);
     emit32(assembler, 0x002b0000 | ((ud15 & 0x7fff) << 0));
 }
 
@@ -2626,21 +2760,25 @@ void la_vadda_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_
 
 void la_vaddi_bu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x728a0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vaddi_du(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x728b8000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vaddi_hu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x728a8000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vaddi_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x728b0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -2771,6 +2909,7 @@ void la_vand_v(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_t
 
 void la_vandi_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x73d00000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -2881,21 +3020,25 @@ void la_vbitclr_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vp
 
 void la_vbitclri_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x73102000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vbitclri_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73110000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vbitclri_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73104000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vbitclri_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73108000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -2921,21 +3064,25 @@ void la_vbitrev_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vp
 
 void la_vbitrevi_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x73182000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vbitrevi_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73190000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vbitrevi_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73184000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vbitrevi_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73188000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -2946,6 +3093,7 @@ void la_vbitsel_v(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vp
 
 void la_vbitseli_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x73c40000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -2971,31 +3119,37 @@ void la_vbitset_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vp
 
 void la_vbitseti_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x73142000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vbitseti_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73150000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vbitseti_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73144000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vbitseti_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73148000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vbsll_v(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x728e0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vbsrl_v(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x728e8000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -3191,21 +3345,25 @@ void la_vextl_qu_du(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj)
 
 void la_vextrins_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x738c0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_vextrins_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x73800000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_vextrins_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x73880000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_vextrins_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x73840000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -3726,11 +3884,13 @@ void la_vfrstp_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr
 
 void la_vfrstpi_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x729a0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vfrstpi_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x729a8000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -4021,54 +4181,64 @@ void la_vilvl_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_
 
 void la_vinsgr2vr_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x72eb8000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vinsgr2vr_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, uint32_t uk1)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk1, 1);
     emit32(assembler, 0x72ebf000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk1 & 0x1) << 10));
 }
 
 void la_vinsgr2vr_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x72ebc000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vinsgr2vr_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, uint32_t uk2)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk2, 2);
     emit32(assembler, 0x72ebe000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk2 & 0x3) << 10));
 }
 
 void la_vld(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2c000000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_vldi(lagoon_assembler_t* assembler, la_vpr_t vd, int32_t sj13)
 {
+    LA_ASSERT_SIGNED_RANGE(sj13, 13);
     emit32(assembler, 0x73e00000 | ((vd & 0x1f) << 0) | ((sj13 & 0x1fff) << 5));
 }
 
 void la_vldrepl_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x30800000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_vldrepl_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, int32_t sk9ps3)
 {
     sk9ps3 >>= 3;
+    LA_ASSERT_SIGNED_RANGE(sk9ps3, 9);
     emit32(assembler, 0x30100000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk9ps3 & 0x1ff) << 10));
 }
 
 void la_vldrepl_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, int32_t sk11ps1)
 {
     sk11ps1 >>= 1;
+    LA_ASSERT_SIGNED_RANGE(sk11ps1, 11);
     emit32(assembler, 0x30400000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk11ps1 & 0x7ff) << 10));
 }
 
 void la_vldrepl_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, int32_t sk10ps2)
 {
     sk10ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk10ps2, 10);
     emit32(assembler, 0x30200000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk10ps2 & 0x3ff) << 10));
 }
 
@@ -4259,46 +4429,56 @@ void la_vmax_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_
 
 void la_vmaxi_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72900000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vmaxi_bu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72940000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vmaxi_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72918000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vmaxi_du(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72958000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vmaxi_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72908000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vmaxi_hu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72948000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vmaxi_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72910000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vmaxi_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72950000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vmepatmsk_v(lagoon_assembler_t* assembler, la_vpr_t vd, uint32_t uj5, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uj5, 5);
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x729b8000 | ((vd & 0x1f) << 0) | ((uj5 & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -4344,41 +4524,49 @@ void la_vmin_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_
 
 void la_vmini_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72920000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vmini_bu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72960000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vmini_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72938000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vmini_du(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72978000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vmini_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72928000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vmini_hu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72968000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vmini_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72930000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vmini_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72970000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -4679,6 +4867,7 @@ void la_vnor_v(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_t
 
 void la_vnori_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x73dc0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -4689,6 +4878,7 @@ void la_vor_v(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_t 
 
 void la_vori_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x73d40000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -4759,6 +4949,7 @@ void la_vpcnt_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj)
 
 void la_vpermi_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x73e40000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -4804,41 +4995,49 @@ void la_vpickod_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vp
 
 void la_vpickve2gr_b(lagoon_assembler_t* assembler, la_gpr_t rd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x72ef8000 | ((rd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vpickve2gr_bu(lagoon_assembler_t* assembler, la_gpr_t rd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x72f38000 | ((rd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vpickve2gr_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_vpr_t vj, uint32_t uk1)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk1, 1);
     emit32(assembler, 0x72eff000 | ((rd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk1 & 0x1) << 10));
 }
 
 void la_vpickve2gr_du(lagoon_assembler_t* assembler, la_gpr_t rd, la_vpr_t vj, uint32_t uk1)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk1, 1);
     emit32(assembler, 0x72f3f000 | ((rd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk1 & 0x1) << 10));
 }
 
 void la_vpickve2gr_h(lagoon_assembler_t* assembler, la_gpr_t rd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x72efc000 | ((rd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vpickve2gr_hu(lagoon_assembler_t* assembler, la_gpr_t rd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x72f3c000 | ((rd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vpickve2gr_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_vpr_t vj, uint32_t uk2)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk2, 2);
     emit32(assembler, 0x72efe000 | ((rd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk2 & 0x3) << 10));
 }
 
 void la_vpickve2gr_wu(lagoon_assembler_t* assembler, la_gpr_t rd, la_vpr_t vj, uint32_t uk2)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk2, 2);
     emit32(assembler, 0x72f3e000 | ((rd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk2 & 0x3) << 10));
 }
 
@@ -4884,21 +5083,25 @@ void la_vreplve_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_gp
 
 void la_vreplvei_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x72f78000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vreplvei_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk1)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk1, 1);
     emit32(assembler, 0x72f7f000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk1 & 0x1) << 10));
 }
 
 void la_vreplvei_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x72f7c000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vreplvei_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk2)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk2, 2);
     emit32(assembler, 0x72f7e000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk2 & 0x3) << 10));
 }
 
@@ -4924,21 +5127,25 @@ void la_vrotr_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_
 
 void la_vrotri_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x72a02000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vrotri_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x72a10000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vrotri_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x72a04000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vrotri_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72a08000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -4984,41 +5191,49 @@ void la_vsadd_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr
 
 void la_vsat_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x73242000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vsat_bu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x73282000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vsat_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73250000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vsat_du(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73290000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vsat_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73244000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vsat_hu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73284000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vsat_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73248000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vsat_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73288000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -5044,21 +5259,25 @@ void la_vseq_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_t
 
 void la_vseqi_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72800000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vseqi_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72818000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vseqi_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72808000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vseqi_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72810000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
@@ -5114,21 +5333,25 @@ void la_vsetnez_v(lagoon_assembler_t* assembler, la_fcc_t cd, la_vpr_t vj)
 
 void la_vshuf4i_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x73900000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_vshuf4i_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x739c0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_vshuf4i_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x73940000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_vshuf4i_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x73980000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -5214,41 +5437,49 @@ void la_vsle_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_
 
 void la_vslei_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72820000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vslei_bu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72840000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vslei_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72838000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vslei_du(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72858000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vslei_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72828000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vslei_hu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72848000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vslei_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72830000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vslei_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72850000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -5274,51 +5505,61 @@ void la_vsll_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_t
 
 void la_vslli_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x732c2000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vslli_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x732d0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vslli_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x732c4000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vslli_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x732c8000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vsllwil_d_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73088000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vsllwil_du_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x730c8000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vsllwil_h_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x73082000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vsllwil_hu_bu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x730c2000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vsllwil_w_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73084000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vsllwil_wu_hu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x730c4000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
@@ -5364,41 +5605,49 @@ void la_vslt_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_
 
 void la_vslti_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72860000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vslti_bu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72880000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vslti_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72878000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vslti_du(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72898000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vslti_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72868000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vslti_hu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72888000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vslti_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x72870000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_vslti_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72890000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -5424,21 +5673,25 @@ void la_vsra_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_t
 
 void la_vsrai_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x73342000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vsrai_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73350000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vsrai_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73344000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vsrai_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73348000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -5459,21 +5712,25 @@ void la_vsran_w_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vp
 
 void la_vsrani_b_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73584000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vsrani_d_q(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x735a0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_vsrani_h_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73588000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vsrani_w_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73590000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -5499,21 +5756,25 @@ void la_vsrar_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_
 
 void la_vsrari_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x72a82000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vsrari_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x72a90000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vsrari_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x72a84000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vsrari_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72a88000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -5534,21 +5795,25 @@ void la_vsrarn_w_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_v
 
 void la_vsrarni_b_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x735c4000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vsrarni_d_q(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x735e0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_vsrarni_h_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x735c8000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vsrarni_w_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x735d0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -5574,21 +5839,25 @@ void la_vsrl_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_t
 
 void la_vsrli_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x73302000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vsrli_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73310000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vsrli_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73304000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vsrli_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73308000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -5609,21 +5878,25 @@ void la_vsrln_w_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vp
 
 void la_vsrlni_b_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73404000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vsrlni_d_q(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x73420000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_vsrlni_h_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73408000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vsrlni_w_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73410000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -5649,21 +5922,25 @@ void la_vsrlr_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_
 
 void la_vsrlri_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x72a42000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_vsrlri_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x72a50000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vsrlri_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x72a44000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vsrlri_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x72a48000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -5684,21 +5961,25 @@ void la_vsrlrn_w_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_v
 
 void la_vsrlrni_b_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73444000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vsrlrni_d_q(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x73460000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_vsrlrni_h_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73448000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vsrlrni_w_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73450000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -5734,41 +6015,49 @@ void la_vssran_wu_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_
 
 void la_vssrani_b_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73604000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vssrani_bu_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73644000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vssrani_d_q(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x73620000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_vssrani_du_q(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x73660000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_vssrani_h_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73608000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vssrani_hu_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73648000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vssrani_w_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73610000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vssrani_wu_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73650000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -5804,41 +6093,49 @@ void la_vssrarn_wu_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la
 
 void la_vssrarni_b_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73684000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vssrarni_bu_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x736c4000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vssrarni_d_q(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x736a0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_vssrarni_du_q(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x736e0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_vssrarni_h_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73688000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vssrarni_hu_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x736c8000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vssrarni_w_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73690000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vssrarni_wu_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x736d0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -5874,41 +6171,49 @@ void la_vssrln_wu_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_
 
 void la_vssrlni_b_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73484000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vssrlni_bu_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x734c4000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vssrlni_d_q(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x734a0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_vssrlni_du_q(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x734e0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_vssrlni_h_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73488000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vssrlni_hu_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x734c8000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vssrlni_w_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73490000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vssrlni_wu_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x734d0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -5944,41 +6249,49 @@ void la_vssrlrn_wu_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la
 
 void la_vssrlrni_b_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73504000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vssrlrni_bu_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x73544000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_vssrlrni_d_q(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x73520000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_vssrlrni_du_q(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x73560000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_vssrlrni_h_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73508000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vssrlrni_hu_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x73548000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vssrlrni_w_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73510000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_vssrlrni_wu_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x73550000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -6024,29 +6337,38 @@ void la_vssub_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr
 
 void la_vst(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2c400000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_vstelm_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, int32_t sk8, uint32_t un4)
 {
+    LA_ASSERT_SIGNED_RANGE(sk8, 8);
+    LA_ASSERT_UNSIGNED_RANGE(un4, 4);
     emit32(assembler, 0x31800000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk8 & 0xff) << 10) | ((un4 & 0xf) << 18));
 }
 
 void la_vstelm_d(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, int32_t sk8ps3, uint32_t un1)
 {
     sk8ps3 >>= 3;
+    LA_ASSERT_SIGNED_RANGE(sk8ps3, 8);
+    LA_ASSERT_UNSIGNED_RANGE(un1, 1);
     emit32(assembler, 0x31100000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk8ps3 & 0xff) << 10) | ((un1 & 0x1) << 18));
 }
 
 void la_vstelm_h(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, int32_t sk8ps1, uint32_t un3)
 {
     sk8ps1 >>= 1;
+    LA_ASSERT_SIGNED_RANGE(sk8ps1, 8);
+    LA_ASSERT_UNSIGNED_RANGE(un3, 3);
     emit32(assembler, 0x31400000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk8ps1 & 0xff) << 10) | ((un3 & 0x7) << 18));
 }
 
 void la_vstelm_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_gpr_t rj, int32_t sk8ps2, uint32_t un2)
 {
     sk8ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk8ps2, 8);
+    LA_ASSERT_UNSIGNED_RANGE(un2, 2);
     emit32(assembler, 0x31200000 | ((vd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk8ps2 & 0xff) << 10) | ((un2 & 0x3) << 18));
 }
 
@@ -6082,21 +6404,25 @@ void la_vsub_w(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_t
 
 void la_vsubi_bu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x728c0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vsubi_du(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x728d8000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vsubi_hu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x728c8000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_vsubi_wu(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x728d0000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -6187,6 +6513,7 @@ void la_vxor_v(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, la_vpr_t
 
 void la_vxori_b(lagoon_assembler_t* assembler, la_vpr_t vd, la_vpr_t vj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x73d80000 | ((vd & 0x1f) << 0) | ((vj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -6317,6 +6644,7 @@ void la_x86inctop(lagoon_assembler_t* assembler)
 
 void la_x86mfflag(lagoon_assembler_t* assembler, la_gpr_t rd, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x005c0000 | ((rd & 0x1f) << 0) | ((uk8 & 0xff) << 10));
 }
 
@@ -6327,11 +6655,13 @@ void la_x86mftop(lagoon_assembler_t* assembler, la_gpr_t rd)
 
 void la_x86mtflag(lagoon_assembler_t* assembler, la_gpr_t rd, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x005c0020 | ((rd & 0x1f) << 0) | ((uk8 & 0xff) << 10));
 }
 
 void la_x86mttop(lagoon_assembler_t* assembler, uint32_t uj3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uj3, 3);
     emit32(assembler, 0x00007000 | ((uj3 & 0x7) << 5));
 }
 
@@ -6417,21 +6747,25 @@ void la_x86rcl_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk)
 
 void la_x86rcli_b(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x00542018 | ((rj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_x86rcli_d(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x0055001b | ((rj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_x86rcli_h(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x00544019 | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_x86rcli_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x0054801a | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -6457,21 +6791,25 @@ void la_x86rcr_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk)
 
 void la_x86rcri_b(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x00542010 | ((rj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_x86rcri_d(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x00550013 | ((rj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_x86rcri_h(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x00544011 | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_x86rcri_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x00548012 | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -6497,21 +6835,25 @@ void la_x86rotl_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk)
 
 void la_x86rotli_b(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x00542014 | ((rj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_x86rotli_d(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x00550017 | ((rj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_x86rotli_h(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x00544015 | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_x86rotli_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x00548016 | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -6537,21 +6879,25 @@ void la_x86rotr_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk)
 
 void la_x86rotri_b(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x0054200c | ((rj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_x86rotri_d(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x0055000f | ((rj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_x86rotri_h(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x0054400d | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_x86rotri_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x0054800e | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -6577,6 +6923,8 @@ void la_x86sbc_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk)
 
 void la_x86settag(lagoon_assembler_t* assembler, la_gpr_t rd, uint32_t uj5, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uj5, 5);
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x00580000 | ((rd & 0x1f) << 0) | ((uj5 & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -6607,21 +6955,25 @@ void la_x86sll_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk)
 
 void la_x86slli_b(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x00542000 | ((rj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_x86slli_d(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x00550003 | ((rj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_x86slli_h(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x00544001 | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_x86slli_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x00548002 | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -6647,21 +6999,25 @@ void la_x86sra_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk)
 
 void la_x86srai_b(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x00542008 | ((rj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_x86srai_d(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x0055000b | ((rj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_x86srai_h(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x00544009 | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_x86srai_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x0054800a | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -6687,21 +7043,25 @@ void la_x86srl_w(lagoon_assembler_t* assembler, la_gpr_t rj, la_gpr_t rk)
 
 void la_x86srli_b(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x00542004 | ((rj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_x86srli_d(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x00550007 | ((rj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_x86srli_h(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x00544005 | ((rj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_x86srli_w(lagoon_assembler_t* assembler, la_gpr_t rj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x00548006 | ((rj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -6762,6 +7122,7 @@ void la_xor(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, la_gpr_t rk
 
 void la_xori(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj, uint32_t uk12)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk12, 12);
     emit32(assembler, 0x03c00000 | ((rd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk12 & 0xfff) << 10));
 }
 
@@ -6852,21 +7213,25 @@ void la_xvadda_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_x
 
 void la_xvaddi_bu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x768a0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvaddi_du(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x768b8000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvaddi_hu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x768a8000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvaddi_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x768b0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -6997,6 +7362,7 @@ void la_xvand_v(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_xv
 
 void la_xvandi_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77d00000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -7107,21 +7473,25 @@ void la_xvbitclr_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la
 
 void la_xvbitclri_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x77102000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvbitclri_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77110000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvbitclri_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77104000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvbitclri_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77108000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -7147,21 +7517,25 @@ void la_xvbitrev_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la
 
 void la_xvbitrevi_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x77182000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvbitrevi_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77190000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvbitrevi_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77184000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvbitrevi_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77188000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -7172,6 +7546,7 @@ void la_xvbitsel_v(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la
 
 void la_xvbitseli_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77c40000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -7197,31 +7572,37 @@ void la_xvbitset_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la
 
 void la_xvbitseti_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x77142000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvbitseti_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77150000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvbitseti_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77144000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvbitseti_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77148000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvbsll_v(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x768e0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvbsrl_v(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x768e8000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -7357,21 +7738,25 @@ void la_xvextl_qu_du(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj)
 
 void la_xvextrins_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x778c0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_xvextrins_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77800000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_xvextrins_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77880000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_xvextrins_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77840000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -7892,11 +8277,13 @@ void la_xvfrstp_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_
 
 void la_xvfrstpi_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x769a0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvfrstpi_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x769a8000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -8187,54 +8574,64 @@ void la_xvilvl_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_x
 
 void la_xvinsgr2vr_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_gpr_t rj, uint32_t uk2)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk2, 2);
     emit32(assembler, 0x76ebe000 | ((xd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk2 & 0x3) << 10));
 }
 
 void la_xvinsgr2vr_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_gpr_t rj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x76ebc000 | ((xd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvinsve0_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk2)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk2, 2);
     emit32(assembler, 0x76ffe000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk2 & 0x3) << 10));
 }
 
 void la_xvinsve0_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x76ffc000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvld(lagoon_assembler_t* assembler, la_xvpr_t xd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2c800000 | ((xd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_xvldi(lagoon_assembler_t* assembler, la_xvpr_t xd, int32_t sj13)
 {
+    LA_ASSERT_SIGNED_RANGE(sj13, 13);
     emit32(assembler, 0x77e00000 | ((xd & 0x1f) << 0) | ((sj13 & 0x1fff) << 5));
 }
 
 void la_xvldrepl_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x32800000 | ((xd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_xvldrepl_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_gpr_t rj, int32_t sk9ps3)
 {
     sk9ps3 >>= 3;
+    LA_ASSERT_SIGNED_RANGE(sk9ps3, 9);
     emit32(assembler, 0x32100000 | ((xd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk9ps3 & 0x1ff) << 10));
 }
 
 void la_xvldrepl_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_gpr_t rj, int32_t sk11ps1)
 {
     sk11ps1 >>= 1;
+    LA_ASSERT_SIGNED_RANGE(sk11ps1, 11);
     emit32(assembler, 0x32400000 | ((xd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk11ps1 & 0x7ff) << 10));
 }
 
 void la_xvldrepl_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_gpr_t rj, int32_t sk10ps2)
 {
     sk10ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk10ps2, 10);
     emit32(assembler, 0x32200000 | ((xd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk10ps2 & 0x3ff) << 10));
 }
 
@@ -8425,46 +8822,56 @@ void la_xvmax_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_x
 
 void la_xvmaxi_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76900000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvmaxi_bu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76940000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvmaxi_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76918000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvmaxi_du(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76958000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvmaxi_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76908000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvmaxi_hu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76948000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvmaxi_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76910000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvmaxi_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76950000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvmepatmsk_v(lagoon_assembler_t* assembler, la_xvpr_t xd, uint32_t uj5, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uj5, 5);
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x769b8000 | ((xd & 0x1f) << 0) | ((uj5 & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -8510,41 +8917,49 @@ void la_xvmin_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_x
 
 void la_xvmini_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76920000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvmini_bu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76960000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvmini_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76938000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvmini_du(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76978000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvmini_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76928000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvmini_hu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76968000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvmini_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76930000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvmini_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76970000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -8845,6 +9260,7 @@ void la_xvnor_v(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_xv
 
 void la_xvnori_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77dc0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -8855,6 +9271,7 @@ void la_xvor_v(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_xvp
 
 void la_xvori_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77d40000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -8930,16 +9347,19 @@ void la_xvperm_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_x
 
 void la_xvpermi_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77e80000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_xvpermi_q(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77ec0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_xvpermi_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77e40000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -8985,51 +9405,61 @@ void la_xvpickod_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la
 
 void la_xvpickve2gr_d(lagoon_assembler_t* assembler, la_gpr_t rd, la_xvpr_t xj, uint32_t uk2)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk2, 2);
     emit32(assembler, 0x76efe000 | ((rd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk2 & 0x3) << 10));
 }
 
 void la_xvpickve2gr_du(lagoon_assembler_t* assembler, la_gpr_t rd, la_xvpr_t xj, uint32_t uk2)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk2, 2);
     emit32(assembler, 0x76f3e000 | ((rd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk2 & 0x3) << 10));
 }
 
 void la_xvpickve2gr_w(lagoon_assembler_t* assembler, la_gpr_t rd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x76efc000 | ((rd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvpickve2gr_wu(lagoon_assembler_t* assembler, la_gpr_t rd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x76f3c000 | ((rd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvpickve_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk2)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk2, 2);
     emit32(assembler, 0x7703e000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk2 & 0x3) << 10));
 }
 
 void la_xvpickve_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x7703c000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvrepl128vei_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x76f78000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvrepl128vei_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk1)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk1, 1);
     emit32(assembler, 0x76f7f000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk1 & 0x1) << 10));
 }
 
 void la_xvrepl128vei_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x76f7c000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvrepl128vei_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk2)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk2, 2);
     emit32(assembler, 0x76f7e000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk2 & 0x3) << 10));
 }
 
@@ -9120,21 +9550,25 @@ void la_xvrotr_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_x
 
 void la_xvrotri_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x76a02000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvrotri_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x76a10000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvrotri_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x76a04000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvrotri_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76a08000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -9180,41 +9614,49 @@ void la_xvsadd_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_
 
 void la_xvsat_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x77242000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvsat_bu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x77282000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvsat_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77250000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvsat_du(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77290000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvsat_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77244000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvsat_hu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77284000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvsat_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77248000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvsat_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77288000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -9240,21 +9682,25 @@ void la_xvseq_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_xv
 
 void la_xvseqi_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76800000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvseqi_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76818000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvseqi_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76808000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvseqi_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76810000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
@@ -9310,21 +9756,25 @@ void la_xvsetnez_v(lagoon_assembler_t* assembler, la_fcc_t cd, la_xvpr_t xj)
 
 void la_xvshuf4i_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77900000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_xvshuf4i_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x779c0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_xvshuf4i_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77940000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
 void la_xvshuf4i_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77980000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 
@@ -9410,41 +9860,49 @@ void la_xvsle_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_x
 
 void la_xvslei_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76820000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvslei_bu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76840000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvslei_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76838000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvslei_du(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76858000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvslei_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76828000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvslei_hu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76848000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvslei_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76830000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvslei_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76850000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -9470,51 +9928,61 @@ void la_xvsll_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_xv
 
 void la_xvslli_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x772c2000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvslli_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x772d0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvslli_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x772c4000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvslli_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x772c8000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvsllwil_d_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77088000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvsllwil_du_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x770c8000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvsllwil_h_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x77082000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvsllwil_hu_bu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x770c2000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvsllwil_w_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77084000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvsllwil_wu_hu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x770c4000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
@@ -9560,41 +10028,49 @@ void la_xvslt_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_x
 
 void la_xvslti_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76860000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvslti_bu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76880000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvslti_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76878000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvslti_du(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76898000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvslti_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76868000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvslti_hu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76888000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvslti_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, int32_t sk5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk5, 5);
     emit32(assembler, 0x76870000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((sk5 & 0x1f) << 10));
 }
 
 void la_xvslti_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76890000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -9620,21 +10096,25 @@ void la_xvsra_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_xv
 
 void la_xvsrai_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x77342000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvsrai_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77350000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvsrai_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77344000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvsrai_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77348000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -9655,21 +10135,25 @@ void la_xvsran_w_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la
 
 void la_xvsrani_b_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77584000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvsrani_d_q(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x775a0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_xvsrani_h_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77588000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvsrani_w_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77590000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -9695,21 +10179,25 @@ void la_xvsrar_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_x
 
 void la_xvsrari_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x76a82000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvsrari_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x76a90000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvsrari_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x76a84000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvsrari_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76a88000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -9730,21 +10218,25 @@ void la_xvsrarn_w_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, l
 
 void la_xvsrarni_b_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x775c4000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvsrarni_d_q(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x775e0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_xvsrarni_h_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x775c8000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvsrarni_w_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x775d0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -9770,21 +10262,25 @@ void la_xvsrl_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_xv
 
 void la_xvsrli_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x77302000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvsrli_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77310000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvsrli_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77304000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvsrli_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77308000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -9805,21 +10301,25 @@ void la_xvsrln_w_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la
 
 void la_xvsrlni_b_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77404000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvsrlni_d_q(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x77420000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_xvsrlni_h_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77408000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvsrlni_w_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77410000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -9845,21 +10345,25 @@ void la_xvsrlr_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_x
 
 void la_xvsrlri_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk3)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk3, 3);
     emit32(assembler, 0x76a42000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk3 & 0x7) << 10));
 }
 
 void la_xvsrlri_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x76a50000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvsrlri_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x76a44000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvsrlri_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x76a48000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -9880,21 +10384,25 @@ void la_xvsrlrn_w_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, l
 
 void la_xvsrlrni_b_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77444000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvsrlrni_d_q(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x77460000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_xvsrlrni_h_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77448000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvsrlrni_w_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77450000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -9930,41 +10438,49 @@ void la_xvssran_wu_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, 
 
 void la_xvssrani_b_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77604000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvssrani_bu_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77644000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvssrani_d_q(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x77620000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_xvssrani_du_q(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x77660000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_xvssrani_h_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77608000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvssrani_hu_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77648000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvssrani_w_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77610000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvssrani_wu_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77650000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -10000,41 +10516,49 @@ void la_xvssrarn_wu_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj,
 
 void la_xvssrarni_b_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77684000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvssrarni_bu_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x776c4000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvssrarni_d_q(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x776a0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_xvssrarni_du_q(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x776e0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_xvssrarni_h_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77688000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvssrarni_hu_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x776c8000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvssrarni_w_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77690000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvssrarni_wu_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x776d0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -10070,41 +10594,49 @@ void la_xvssrln_wu_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, 
 
 void la_xvssrlni_b_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77484000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvssrlni_bu_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x774c4000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvssrlni_d_q(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x774a0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_xvssrlni_du_q(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x774e0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_xvssrlni_h_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77488000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvssrlni_hu_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x774c8000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvssrlni_w_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77490000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvssrlni_wu_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x774d0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -10140,41 +10672,49 @@ void la_xvssrlrn_wu_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj,
 
 void la_xvssrlrni_b_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77504000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvssrlrni_bu_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk4)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk4, 4);
     emit32(assembler, 0x77544000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk4 & 0xf) << 10));
 }
 
 void la_xvssrlrni_d_q(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x77520000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_xvssrlrni_du_q(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk7)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk7, 7);
     emit32(assembler, 0x77560000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk7 & 0x7f) << 10));
 }
 
 void la_xvssrlrni_h_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77508000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvssrlrni_hu_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x77548000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvssrlrni_w_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77510000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
 void la_xvssrlrni_wu_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk6)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk6, 6);
     emit32(assembler, 0x77550000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk6 & 0x3f) << 10));
 }
 
@@ -10220,29 +10760,38 @@ void la_xvssub_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_
 
 void la_xvst(lagoon_assembler_t* assembler, la_xvpr_t xd, la_gpr_t rj, int32_t sk12)
 {
+    LA_ASSERT_SIGNED_RANGE(sk12, 12);
     emit32(assembler, 0x2cc00000 | ((xd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk12 & 0xfff) << 10));
 }
 
 void la_xvstelm_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_gpr_t rj, int32_t sk8, uint32_t un5)
 {
+    LA_ASSERT_SIGNED_RANGE(sk8, 8);
+    LA_ASSERT_UNSIGNED_RANGE(un5, 5);
     emit32(assembler, 0x33800000 | ((xd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk8 & 0xff) << 10) | ((un5 & 0x1f) << 18));
 }
 
 void la_xvstelm_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_gpr_t rj, int32_t sk8ps3, uint32_t un2)
 {
     sk8ps3 >>= 3;
+    LA_ASSERT_SIGNED_RANGE(sk8ps3, 8);
+    LA_ASSERT_UNSIGNED_RANGE(un2, 2);
     emit32(assembler, 0x33100000 | ((xd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk8ps3 & 0xff) << 10) | ((un2 & 0x3) << 18));
 }
 
 void la_xvstelm_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_gpr_t rj, int32_t sk8ps1, uint32_t un4)
 {
     sk8ps1 >>= 1;
+    LA_ASSERT_SIGNED_RANGE(sk8ps1, 8);
+    LA_ASSERT_UNSIGNED_RANGE(un4, 4);
     emit32(assembler, 0x33400000 | ((xd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk8ps1 & 0xff) << 10) | ((un4 & 0xf) << 18));
 }
 
 void la_xvstelm_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_gpr_t rj, int32_t sk8ps2, uint32_t un3)
 {
     sk8ps2 >>= 2;
+    LA_ASSERT_SIGNED_RANGE(sk8ps2, 8);
+    LA_ASSERT_UNSIGNED_RANGE(un3, 3);
     emit32(assembler, 0x33200000 | ((xd & 0x1f) << 0) | ((rj & 0x1f) << 5) | ((sk8ps2 & 0xff) << 10) | ((un3 & 0x7) << 18));
 }
 
@@ -10278,21 +10827,25 @@ void la_xvsub_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_xv
 
 void la_xvsubi_bu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x768c0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvsubi_du(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x768d8000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvsubi_hu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x768c8000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
 void la_xvsubi_wu(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk5)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk5, 5);
     emit32(assembler, 0x768d0000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk5 & 0x1f) << 10));
 }
 
@@ -10383,6 +10936,7 @@ void la_xvxor_v(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, la_xv
 
 void la_xvxori_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8)
 {
+    LA_ASSERT_UNSIGNED_RANGE(uk8, 8);
     emit32(assembler, 0x77d80000 | ((xd & 0x1f) << 0) | ((xj & 0x1f) << 5) | ((uk8 & 0xff) << 10));
 }
 

@@ -55,6 +55,9 @@ cmake -B build && cmake --build build
 # with tests
 cmake -B build -DBUILD_TESTS=ON && cmake --build build
 ctest --test-dir build
+
+# Debug build with assertion on immediates enabled
+cmake -B build -DCMAKE_BUILD_TYPE=Debug
 ```
 
 Or compile directly:
