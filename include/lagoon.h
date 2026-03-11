@@ -263,7 +263,16 @@ void la_label_free(lagoon_assembler_t* assembler, lagoon_label_t* label);
 
 void la_load_immediate32(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t value);
 void la_load_immediate64(lagoon_assembler_t* assembler, la_gpr_t rd, int64_t value);
+
+// pesudo-instructions
+void la_move(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj);
+void la_li_w(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t value);
+void la_li_wu(lagoon_assembler_t* assembler, la_gpr_t rd, uint32_t value);
+void la_li_d(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t value);
+void la_nop(lagoon_assembler_t* assembler);
 void la_ret(lagoon_assembler_t* assembler);
+void la_jr(lagoon_assembler_t* assembler, la_gpr_t rj);
+void la_ud(lagoon_assembler_t* assembler, la_gpr_t rd);
 
 // clang-format off
 //// ANCHOR: mnemonic function declarations start

@@ -140,9 +140,44 @@ void la_load_immediate64(lagoon_assembler_t* assembler, la_gpr_t rd, int64_t val
     la_lu52i_d(assembler, rd, rd, (val >> 52) & 0xfff);
 }
 
+void la_move(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj)
+{
+    la_or(assembler, rd, rj, LA_ZERO);
+}
+
+void la_li_w(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t sk12)
+{
+    la_addi_w(assembler, rd, LA_ZERO, sk12);
+}
+
+void la_li_wu(lagoon_assembler_t* assembler, la_gpr_t rd, uint32_t uk12)
+{
+    la_ori(assembler, rd, LA_ZERO, uk12);
+}
+
+void la_li_d(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t sk12)
+{
+    la_addi_d(assembler, rd, LA_ZERO, sk12);
+}
+
+void la_nop(lagoon_assembler_t* assembler)
+{
+    la_andi(assembler, LA_ZERO, LA_ZERO, 0);
+}
+
 void la_ret(lagoon_assembler_t* assembler)
 {
     la_jirl(assembler, LA_ZERO, LA_RA, 0);
+}
+
+void la_jr(lagoon_assembler_t* assembler, la_gpr_t rj)
+{
+    la_jirl(assembler, LA_ZERO, rj, 0);
+}
+
+void la_ud(lagoon_assembler_t* assembler, la_gpr_t rd)
+{
+    la_amswap_w(assembler, rd, LA_R1, rd);
 }
 
 // clang-format off
