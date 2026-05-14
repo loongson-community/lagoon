@@ -28,14 +28,14 @@ static int test_disassembler(uint32_t instruction, const char* expected_output, 
     return 0;
 }
 
-static int test_la_local_disassembly(void* buffer, const char* description,
-    const char* expected_pcalau12i, const char* expected_addi_d)
+static int test_la_pair_disassembly(void* buffer, const char* description,
+    const char* expected_pcalau12i, const char* expected_second)
 {
     int result = 0;
     uint8_t* code = (uint8_t*)buffer;
 
     result |= test_disassembler(*(uint32_t*)code, expected_pcalau12i, description);
-    result |= test_disassembler(*(uint32_t*)(code + 4), expected_addi_d, description);
+    result |= test_disassembler(*(uint32_t*)(code + 4), expected_second, description);
     return result;
 }
 
@@ -291,6 +291,64 @@ static int test_inline_label_offsets_grow_to_heap(void)
     return result;
 }
 
+static int test_raw_emit_variants(void)
+{
+    int result = 0;
+    lagoon_assembler_t assembler;
+    uint8_t buffer[64] = { 0 };
+    uint8_t expected[64] = { 0 };
+    size_t expected_size = 0;
+    uint8_t value8 = 0x12;
+    uint16_t value16 = 0x3456;
+    uint32_t value32 = 0x789abcde;
+    uint64_t value64 = 0xfedcba9876543210ULL;
+    uintptr_t value_ptr = (uintptr_t)0x1234abcd;
+    uint8_t bytes[] = { 0xaa, 0xbb, 0xcc };
+
+    la_init_assembler(&assembler, buffer, sizeof(buffer));
+
+    la_emit_u8(&assembler, value8);
+    memcpy(expected + expected_size, &value8, sizeof(value8));
+    expected_size += sizeof(value8);
+
+    la_emit_u16(&assembler, value16);
+    memcpy(expected + expected_size, &value16, sizeof(value16));
+    expected_size += sizeof(value16);
+
+    la_emit_u32(&assembler, value32);
+    memcpy(expected + expected_size, &value32, sizeof(value32));
+    expected_size += sizeof(value32);
+
+    la_emit_u64(&assembler, value64);
+    memcpy(expected + expected_size, &value64, sizeof(value64));
+    expected_size += sizeof(value64);
+
+    la_emit_ptr(&assembler, value_ptr);
+    memcpy(expected + expected_size, &value_ptr, sizeof(value_ptr));
+    expected_size += sizeof(value_ptr);
+
+    la_emit_bytes(&assembler, bytes, sizeof(bytes));
+    memcpy(expected + expected_size, bytes, sizeof(bytes));
+    expected_size += sizeof(bytes);
+
+    if ((size_t)(assembler.cursor - assembler.buffer) != expected_size) {
+        printf("FAIL: raw emit variants cursor: expected %zu, got %zu\n",
+            expected_size, (size_t)(assembler.cursor - assembler.buffer));
+        result = 1;
+    } else {
+        printf("PASS: raw emit variants cursor\n");
+    }
+
+    if (memcmp(buffer, expected, expected_size)) {
+        printf("FAIL: raw emit variants bytes\n");
+        result = 1;
+    } else {
+        printf("PASS: raw emit variants bytes\n");
+    }
+
+    return result;
+}
+
 static int test_bound_label_returns_offset(void)
 {
     int result = 0;
@@ -337,7 +395,7 @@ static int test_la_local_forward_label(void)
     la_ret(&assembler);
     la_bind(&assembler, &label);
 
-    result |= test_la_local_disassembly(buffer, "la.local forward label",
+    result |= test_la_pair_disassembly(buffer, "la.local forward label",
         "pcalau12i $a0, 0", "addi.d $a0, $a0, 12");
 
     uintptr_t expected = (uintptr_t)(assembler.buffer + label.location);
@@ -378,7 +436,7 @@ static int test_la_local_backward_label(void)
     la_la_local(&assembler, LA_A0, la_label(&assembler, &label));
     la_ret(&assembler);
 
-    result |= test_la_local_disassembly(buffer, "la.local backward label",
+    result |= test_la_pair_disassembly(buffer, "la.local backward label",
         "pcalau12i $a0, 0", "addi.d $a0, $a0, 0");
 
     uintptr_t expected = (uintptr_t)(assembler.buffer + label.location);
@@ -422,7 +480,7 @@ static int test_la_local_forward_label_with_signed_lo12(void)
     }
     la_bind(&assembler, &label);
 
-    result |= test_la_local_disassembly(buffer, "la.local forward label with signed lo12",
+    result |= test_la_pair_disassembly(buffer, "la.local forward label with signed lo12",
         "pcalau12i $a0, 1", "addi.d $a0, $a0, -1912");
 
     uintptr_t expected = (uintptr_t)(assembler.buffer + label.location);
@@ -444,12 +502,146 @@ static int test_la_local_forward_label_with_signed_lo12(void)
     return result;
 }
 
+static int test_la_global_forward_label(void)
+{
+    int result = 0;
+    size_t buffer_size = 1024;
+    void* buffer = alloc_executable_buffer(buffer_size);
+    if (!buffer) {
+        printf("Failed to allocate executable buffer\n");
+        return 1;
+    }
+
+    lagoon_assembler_t assembler;
+    lagoon_label_t label = { 0 };
+    uint64_t expected = 0x123456789abcdef0ULL;
+
+    la_init_assembler(&assembler, buffer, buffer_size);
+
+    la_la_global(&assembler, LA_A0, la_label(&assembler, &label));
+    la_ret(&assembler);
+    while ((size_t)(assembler.cursor - assembler.buffer) < 16) {
+        la_nop(&assembler);
+    }
+    la_bind(&assembler, &label);
+    la_emit_u64(&assembler, expected);
+
+    result |= test_la_pair_disassembly(buffer, "la.global forward label",
+        "pcalau12i $a0, 0", "ld.d $a0, $a0, 16");
+
+    size_t code_size = assembler.cursor - assembler.buffer;
+    __builtin___clear_cache(buffer, buffer + code_size);
+
+    funcptr_t func = (funcptr_t)buffer;
+    uintptr_t returned = func();
+    if (returned != expected) {
+        printf("FAIL: la.global forward label: expected 0x%lx, got 0x%lx\n",
+            (unsigned long)expected, (unsigned long)returned);
+        result = 1;
+    } else {
+        printf("PASS: la.global forward label: 0x%lx\n", (unsigned long)returned);
+    }
+
+    la_label_free(&assembler, &label);
+    free_executable_buffer(buffer, buffer_size);
+    return result;
+}
+
+static int test_la_global_backward_label(void)
+{
+    int result = 0;
+    size_t buffer_size = 1024;
+    void* buffer = alloc_executable_buffer(buffer_size);
+    if (!buffer) {
+        printf("Failed to allocate executable buffer\n");
+        return 1;
+    }
+
+    lagoon_assembler_t assembler;
+    lagoon_label_t label = { 0 };
+    uint64_t expected = 0xfedcba9876543210ULL;
+
+    la_init_assembler(&assembler, buffer, buffer_size);
+
+    la_bind(&assembler, &label);
+    la_emit_u64(&assembler, expected);
+    uint8_t* code_start = assembler.cursor;
+    la_la_global(&assembler, LA_A0, la_label(&assembler, &label));
+    la_ret(&assembler);
+
+    result |= test_la_pair_disassembly(code_start, "la.global backward label",
+        "pcalau12i $a0, 0", "ld.d $a0, $a0, 0");
+
+    size_t code_size = assembler.cursor - assembler.buffer;
+    __builtin___clear_cache(buffer, buffer + code_size);
+
+    funcptr_t func = (funcptr_t)code_start;
+    uintptr_t returned = func();
+    if (returned != expected) {
+        printf("FAIL: la.global backward label: expected 0x%lx, got 0x%lx\n",
+            (unsigned long)expected, (unsigned long)returned);
+        result = 1;
+    } else {
+        printf("PASS: la.global backward label: 0x%lx\n", (unsigned long)returned);
+    }
+
+    la_label_free(&assembler, &label);
+    free_executable_buffer(buffer, buffer_size);
+    return result;
+}
+
+static int test_la_global_forward_label_with_signed_lo12(void)
+{
+    int result = 0;
+    size_t buffer_size = 4096;
+    void* buffer = alloc_executable_buffer(buffer_size);
+    if (!buffer) {
+        printf("Failed to allocate executable buffer\n");
+        return 1;
+    }
+
+    lagoon_assembler_t assembler;
+    lagoon_label_t label = { 0 };
+    uint64_t expected = 0x0badf00d12345678ULL;
+
+    la_init_assembler(&assembler, buffer, buffer_size);
+
+    la_la_global(&assembler, LA_A0, la_label(&assembler, &label));
+    la_ret(&assembler);
+    while ((size_t)(assembler.cursor - assembler.buffer) < 0x888) {
+        la_nop(&assembler);
+    }
+    la_bind(&assembler, &label);
+    la_emit_u64(&assembler, expected);
+
+    result |= test_la_pair_disassembly(buffer, "la.global forward label with signed lo12",
+        "pcalau12i $a0, 1", "ld.d $a0, $a0, -1912");
+
+    size_t code_size = assembler.cursor - assembler.buffer;
+    __builtin___clear_cache(buffer, buffer + code_size);
+
+    funcptr_t func = (funcptr_t)buffer;
+    uintptr_t returned = func();
+    if (returned != expected) {
+        printf("FAIL: la.global forward label with signed lo12: expected 0x%lx, got 0x%lx\n",
+            (unsigned long)expected, (unsigned long)returned);
+        result = 1;
+    } else {
+        printf("PASS: la.global forward label with signed lo12: 0x%lx\n", (unsigned long)returned);
+    }
+
+    la_label_free(&assembler, &label);
+    free_executable_buffer(buffer, buffer_size);
+    return result;
+}
+
 int main(void)
 {
     int result = 0;
 
     result |= test_unbound_label_returns_zero();
     result |= test_inline_label_offsets_grow_to_heap();
+    result |= test_raw_emit_variants();
     result |= test_bound_label_returns_offset();
     result |= test_forward_branch();
     result |= test_backward_branch();
@@ -457,6 +649,9 @@ int main(void)
     result |= test_la_local_forward_label();
     result |= test_la_local_backward_label();
     result |= test_la_local_forward_label_with_signed_lo12();
+    result |= test_la_global_forward_label();
+    result |= test_la_global_backward_label();
+    result |= test_la_global_forward_label_with_signed_lo12();
 
     if (result == 0) {
         printf("\nAll label tests passed!\n");

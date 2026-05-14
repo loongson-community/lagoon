@@ -277,12 +277,19 @@ size_t la_get_remaining_buffer_size(lagoon_assembler_t* assembler);
 void la_bind(lagoon_assembler_t* assembler, lagoon_label_t* label);
 ptrdiff_t la_label(lagoon_assembler_t* assembler, lagoon_label_t* label);
 void la_label_free(lagoon_assembler_t* assembler, lagoon_label_t* label);
+void la_emit_bytes(lagoon_assembler_t* assembler, const void* bytes, size_t size);
+void la_emit_u8(lagoon_assembler_t* assembler, uint8_t value);
+void la_emit_u16(lagoon_assembler_t* assembler, uint16_t value);
+void la_emit_u32(lagoon_assembler_t* assembler, uint32_t value);
+void la_emit_u64(lagoon_assembler_t* assembler, uint64_t value);
+void la_emit_ptr(lagoon_assembler_t* assembler, uintptr_t value);
 
 void la_load_immediate32(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t value);
 void la_load_immediate64(lagoon_assembler_t* assembler, la_gpr_t rd, int64_t value);
 
 // pesudo-instructions
 void la_la_local(lagoon_assembler_t* assembler, la_gpr_t rd, ptrdiff_t offset);
+void la_la_global(lagoon_assembler_t* assembler, la_gpr_t rd, ptrdiff_t offset);
 void la_move(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj);
 void la_li_w(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t value);
 void la_li_wu(lagoon_assembler_t* assembler, la_gpr_t rd, uint32_t value);

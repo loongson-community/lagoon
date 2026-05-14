@@ -63,6 +63,44 @@ static int patch_la_local(lagoon_assembler_t* assembler, uint8_t* patch_location
     return 1;
 }
 
+static int patch_la_global(lagoon_assembler_t* assembler, uint8_t* patch_location, ptrdiff_t label_location)
+{
+    uint32_t pcalau12i = *((uint32_t*)patch_location);
+    uint32_t pcalau12i_rd;
+    uint32_t ld_d;
+    uint32_t ld_d_rd;
+    uint32_t ld_d_rj;
+    uintptr_t pc;
+    uintptr_t target;
+    int32_t hi20;
+    int32_t lo12;
+
+    if ((pcalau12i & 0xfe000000) != 0x1a000000)
+        return 0;
+    if (patch_location + 8 > assembler->cursor)
+        return 0;
+
+    ld_d = *((uint32_t*)(patch_location + 4));
+    pcalau12i_rd = pcalau12i & 0x1f;
+    ld_d_rd = ld_d & 0x1f;
+    ld_d_rj = (ld_d >> 5) & 0x1f;
+    if ((ld_d & 0xffc00000) != 0x28c00000 || ld_d_rd != pcalau12i_rd || ld_d_rj != pcalau12i_rd)
+        return 0;
+
+    pc = (uintptr_t)patch_location;
+    target = (uintptr_t)(assembler->buffer + label_location);
+    hi20 = la_pcala_hi20(target, pc);
+    lo12 = la_pcala_lo12(target);
+    LA_ASSERT_SIGNED_RANGE(hi20, 20);
+    LA_ASSERT_SIGNED_RANGE(lo12, 12);
+
+    pcalau12i = (pcalau12i & ~(0xfffffu << 5)) | (((uint32_t)hi20 & 0xfffff) << 5);
+    ld_d = (ld_d & ~(0xfffu << 10)) | (((uint32_t)lo12 & 0xfff) << 10);
+    *((uint32_t*)patch_location) = pcalau12i;
+    *((uint32_t*)(patch_location + 4)) = ld_d;
+    return 1;
+}
+
 void la_init_assembler(lagoon_assembler_t* assembler, uint8_t* buffer, size_t capacity)
 {
     assembler->buffer = buffer;
@@ -75,6 +113,38 @@ size_t la_get_remaining_buffer_size(lagoon_assembler_t* assembler)
     return assembler->capacity - (size_t)(assembler->cursor - assembler->buffer);
 }
 
+void la_emit_bytes(lagoon_assembler_t* assembler, const void* bytes, size_t size)
+{
+    if (size != 0)
+        memcpy(assembler->cursor, bytes, size);
+    assembler->cursor += size;
+}
+
+void la_emit_u8(lagoon_assembler_t* assembler, uint8_t value)
+{
+    la_emit_bytes(assembler, &value, sizeof(value));
+}
+
+void la_emit_u16(lagoon_assembler_t* assembler, uint16_t value)
+{
+    la_emit_bytes(assembler, &value, sizeof(value));
+}
+
+void la_emit_u32(lagoon_assembler_t* assembler, uint32_t value)
+{
+    la_emit_bytes(assembler, &value, sizeof(value));
+}
+
+void la_emit_u64(lagoon_assembler_t* assembler, uint64_t value)
+{
+    la_emit_bytes(assembler, &value, sizeof(value));
+}
+
+void la_emit_ptr(lagoon_assembler_t* assembler, uintptr_t value)
+{
+    la_emit_bytes(assembler, &value, sizeof(value));
+}
+
 void la_bind(lagoon_assembler_t* assembler, lagoon_label_t* label)
 {
     label->location = (ptrdiff_t)(assembler->cursor - assembler->buffer);
@@ -85,6 +155,8 @@ void la_bind(lagoon_assembler_t* assembler, lagoon_label_t* label)
         uint8_t* patch_location = assembler->buffer + label->offsets[i];
 
         if (patch_la_local(assembler, patch_location, label->location))
+            continue;
+        if (patch_la_global(assembler, patch_location, label->location))
             continue;
 
         ptrdiff_t offset = (label->location - (label->offsets[i])) >> 2;
@@ -219,6 +291,17 @@ void la_la_local(lagoon_assembler_t* assembler, la_gpr_t rd, ptrdiff_t offset)
 
     la_pcalau12i(assembler, rd, hi20);
     la_addi_d(assembler, rd, rd, lo12);
+}
+
+void la_la_global(lagoon_assembler_t* assembler, la_gpr_t rd, ptrdiff_t offset)
+{
+    uintptr_t pc = (uintptr_t)assembler->cursor;
+    uintptr_t target = (uintptr_t)assembler->cursor + offset;
+    int32_t hi20 = la_pcala_hi20(target, pc);
+    int32_t lo12 = la_pcala_lo12(target);
+
+    la_pcalau12i(assembler, rd, hi20);
+    la_ld_d(assembler, rd, rd, lo12);
 }
 
 void la_move(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj)
