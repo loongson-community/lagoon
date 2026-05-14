@@ -262,6 +262,7 @@ typedef struct {
     ptrdiff_t* offsets;
     size_t offset_capacity;
     size_t offset_count;
+    ptrdiff_t inline_offsets[4];
     bool is_bound;
 } lagoon_label_t;
 

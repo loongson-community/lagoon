@@ -91,13 +91,22 @@ ptrdiff_t la_label(lagoon_assembler_t* assembler, lagoon_label_t* label)
     }
 
     if (label->offsets == NULL) {
-        label->offsets = (ptrdiff_t*)malloc(sizeof(ptrdiff_t) * 4);
-        label->offset_capacity = 4;
+        label->offsets = label->inline_offsets;
+        label->offset_capacity = sizeof(label->inline_offsets) / sizeof(label->inline_offsets[0]);
         label->offset_count = 0;
     } else if (label->offset_count >= label->offset_capacity) {
-        label->offset_capacity *= 2;
-        label->offsets = (ptrdiff_t*)realloc(label->offsets,
-            sizeof(ptrdiff_t) * label->offset_capacity);
+        size_t new_capacity = label->offset_capacity * 2;
+        ptrdiff_t* offsets;
+
+        if (label->offsets == label->inline_offsets) {
+            offsets = (ptrdiff_t*)malloc(sizeof(ptrdiff_t) * new_capacity);
+            memcpy(offsets, label->offsets, sizeof(ptrdiff_t) * label->offset_count);
+        } else {
+            offsets = (ptrdiff_t*)realloc(label->offsets, sizeof(ptrdiff_t) * new_capacity);
+        }
+
+        label->offsets = offsets;
+        label->offset_capacity = new_capacity;
     }
 
     ptrdiff_t offset = (ptrdiff_t)(assembler->cursor - assembler->buffer);
@@ -107,10 +116,15 @@ ptrdiff_t la_label(lagoon_assembler_t* assembler, lagoon_label_t* label)
 
 void la_label_free(lagoon_assembler_t* assembler, lagoon_label_t* label)
 {
-    if (label->offsets != NULL) {
+    (void)assembler;
+
+    if (label->offsets != NULL && label->offsets != label->inline_offsets) {
         free(label->offsets);
-        label->offsets = NULL;
     }
+
+    label->offsets = NULL;
+    label->offset_capacity = 0;
+    label->offset_count = 0;
 }
 
 void la_load_immediate32(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t val)

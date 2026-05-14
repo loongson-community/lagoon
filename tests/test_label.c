@@ -193,6 +193,73 @@ static int test_unbound_label_returns_zero(void)
     return result;
 }
 
+static int test_inline_label_offsets_grow_to_heap(void)
+{
+    int result = 0;
+    lagoon_assembler_t assembler;
+    lagoon_label_t label = { 0 };
+    uint8_t buffer[128];
+    size_t inline_capacity = sizeof(label.inline_offsets) / sizeof(label.inline_offsets[0]);
+
+    la_init_assembler(&assembler, buffer, sizeof(buffer));
+
+    for (size_t i = 0; i < inline_capacity; i++) {
+        la_beqz(&assembler, LA_A0, la_label(&assembler, &label));
+    }
+
+    if (label.offset_count != inline_capacity) {
+        printf("FAIL: inline offsets should record %zu offsets, got %zu\n",
+            inline_capacity, label.offset_count);
+        result = 1;
+    } else {
+        printf("PASS: inline offsets recorded offset count\n");
+    }
+
+    if (label.offset_capacity != inline_capacity) {
+        printf("FAIL: inline offset capacity should be %zu, got %zu\n",
+            inline_capacity, label.offset_capacity);
+        result = 1;
+    } else {
+        printf("PASS: inline offsets kept inline capacity\n");
+    }
+
+    if (label.offsets != label.inline_offsets) {
+        printf("FAIL: inline offsets should not allocate heap storage\n");
+        result = 1;
+    } else {
+        printf("PASS: inline offsets use embedded storage\n");
+    }
+
+    la_beqz(&assembler, LA_A0, la_label(&assembler, &label));
+
+    if (label.offset_count != inline_capacity + 1) {
+        printf("FAIL: heap offsets should record %zu offsets, got %zu\n",
+            inline_capacity + 1, label.offset_count);
+        result = 1;
+    } else {
+        printf("PASS: heap offsets recorded offset count\n");
+    }
+
+    if (label.offset_capacity <= inline_capacity) {
+        printf("FAIL: heap offset capacity should grow beyond %zu, got %zu\n",
+            inline_capacity, label.offset_capacity);
+        result = 1;
+    } else {
+        printf("PASS: heap offsets grew capacity\n");
+    }
+
+    if (label.offsets == label.inline_offsets || label.offsets == NULL) {
+        printf("FAIL: heap offsets should move out of embedded storage\n");
+        result = 1;
+    } else {
+        printf("PASS: heap offsets use allocated storage\n");
+    }
+
+    la_bind(&assembler, &label);
+    la_label_free(&assembler, &label);
+    return result;
+}
+
 static int test_bound_label_returns_offset(void)
 {
     int result = 0;
@@ -225,6 +292,7 @@ int main(void)
     int result = 0;
 
     result |= test_unbound_label_returns_zero();
+    result |= test_inline_label_offsets_grow_to_heap();
     result |= test_bound_label_returns_offset();
     result |= test_forward_branch();
     result |= test_backward_branch();
