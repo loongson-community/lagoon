@@ -10,6 +10,59 @@ static void emit32(lagoon_assembler_t* assembler, uint32_t instruction)
     assembler->cursor += 4;
 }
 
+static int32_t la_pcala_hi20(uintptr_t target, uintptr_t pc)
+{
+    intptr_t target_page = (intptr_t)((target + 0x800) & ~(uintptr_t)0xfff);
+    intptr_t pc_page = (intptr_t)(pc & ~(uintptr_t)0xfff);
+    return (int32_t)((target_page - pc_page) >> 12);
+}
+
+static int32_t la_pcala_lo12(uintptr_t target)
+{
+    int32_t lo12 = (int32_t)(target & 0xfff);
+    if (lo12 & 0x800)
+        lo12 -= 0x1000;
+    return lo12;
+}
+
+static int patch_la_local(lagoon_assembler_t* assembler, uint8_t* patch_location, ptrdiff_t label_location)
+{
+    uint32_t pcalau12i = *((uint32_t*)patch_location);
+    uint32_t pcalau12i_rd;
+    uint32_t addi_d;
+    uint32_t addi_d_rd;
+    uint32_t addi_d_rj;
+    uintptr_t pc;
+    uintptr_t target;
+    int32_t hi20;
+    int32_t lo12;
+
+    if ((pcalau12i & 0xfe000000) != 0x1a000000)
+        return 0;
+    if (patch_location + 8 > assembler->cursor)
+        return 0;
+
+    addi_d = *((uint32_t*)(patch_location + 4));
+    pcalau12i_rd = pcalau12i & 0x1f;
+    addi_d_rd = addi_d & 0x1f;
+    addi_d_rj = (addi_d >> 5) & 0x1f;
+    if ((addi_d & 0xffc00000) != 0x02c00000 || addi_d_rd != pcalau12i_rd || addi_d_rj != pcalau12i_rd)
+        return 0;
+
+    pc = (uintptr_t)patch_location;
+    target = (uintptr_t)(assembler->buffer + label_location);
+    hi20 = la_pcala_hi20(target, pc);
+    lo12 = la_pcala_lo12(target);
+    LA_ASSERT_SIGNED_RANGE(hi20, 20);
+    LA_ASSERT_SIGNED_RANGE(lo12, 12);
+
+    pcalau12i = (pcalau12i & ~(0xfffffu << 5)) | (((uint32_t)hi20 & 0xfffff) << 5);
+    addi_d = (addi_d & ~(0xfffu << 10)) | (((uint32_t)lo12 & 0xfff) << 10);
+    *((uint32_t*)patch_location) = pcalau12i;
+    *((uint32_t*)(patch_location + 4)) = addi_d;
+    return 1;
+}
+
 void la_init_assembler(lagoon_assembler_t* assembler, uint8_t* buffer, size_t capacity)
 {
     assembler->buffer = buffer;
@@ -30,6 +83,9 @@ void la_bind(lagoon_assembler_t* assembler, lagoon_label_t* label)
     // backpatch
     for (size_t i = 0; i < label->offset_count; i++) {
         uint8_t* patch_location = assembler->buffer + label->offsets[i];
+
+        if (patch_la_local(assembler, patch_location, label->location))
+            continue;
 
         ptrdiff_t offset = (label->location - (label->offsets[i])) >> 2;
         uint32_t instruction = *((uint32_t*)patch_location);
@@ -152,6 +208,17 @@ void la_load_immediate64(lagoon_assembler_t* assembler, la_gpr_t rd, int64_t val
         return;
     }
     la_lu52i_d(assembler, rd, rd, (val >> 52) & 0xfff);
+}
+
+void la_la_local(lagoon_assembler_t* assembler, la_gpr_t rd, ptrdiff_t offset)
+{
+    uintptr_t pc = (uintptr_t)assembler->cursor;
+    uintptr_t target = (uintptr_t)assembler->cursor + offset;
+    int32_t hi20 = la_pcala_hi20(target, pc);
+    int32_t lo12 = la_pcala_lo12(target);
+
+    la_pcalau12i(assembler, rd, hi20);
+    la_addi_d(assembler, rd, rd, lo12);
 }
 
 void la_move(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj)

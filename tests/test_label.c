@@ -7,6 +7,37 @@
 #include "../include/lagoon.h"
 
 typedef int64_t (*func64_t)(int64_t);
+typedef uintptr_t (*funcptr_t)(void);
+
+static int test_disassembler(uint32_t instruction, const char* expected_output, const char* description)
+{
+    lagoon_insn_t disasm_insn;
+    char disasm_buf[256];
+
+    la_disasm_one(instruction, &disasm_insn);
+    la_insn_to_str(&disasm_insn, disasm_buf, sizeof(disasm_buf));
+
+    if (strcmp(disasm_buf, expected_output)) {
+        printf("FAIL: %s disasm\n", description);
+        printf("Expected: '%s'\n", expected_output);
+        printf("Got:      '%s'\n", disasm_buf);
+        return 1;
+    }
+
+    printf("PASS: %s disasm: %s\n", description, disasm_buf);
+    return 0;
+}
+
+static int test_la_local_disassembly(void* buffer, const char* description,
+    const char* expected_pcalau12i, const char* expected_addi_d)
+{
+    int result = 0;
+    uint8_t* code = (uint8_t*)buffer;
+
+    result |= test_disassembler(*(uint32_t*)code, expected_pcalau12i, description);
+    result |= test_disassembler(*(uint32_t*)(code + 4), expected_addi_d, description);
+    return result;
+}
 
 static void* alloc_executable_buffer(size_t size)
 {
@@ -287,6 +318,132 @@ static int test_bound_label_returns_offset(void)
     return result;
 }
 
+static int test_la_local_forward_label(void)
+{
+    int result = 0;
+    size_t buffer_size = 1024;
+    void* buffer = alloc_executable_buffer(buffer_size);
+    if (!buffer) {
+        printf("Failed to allocate executable buffer\n");
+        return 1;
+    }
+
+    lagoon_assembler_t assembler;
+    lagoon_label_t label = { 0 };
+
+    la_init_assembler(&assembler, buffer, buffer_size);
+
+    la_la_local(&assembler, LA_A0, la_label(&assembler, &label));
+    la_ret(&assembler);
+    la_bind(&assembler, &label);
+
+    result |= test_la_local_disassembly(buffer, "la.local forward label",
+        "pcalau12i $a0, 0", "addi.d $a0, $a0, 12");
+
+    uintptr_t expected = (uintptr_t)(assembler.buffer + label.location);
+    size_t code_size = assembler.cursor - assembler.buffer;
+    __builtin___clear_cache(buffer, buffer + code_size);
+
+    funcptr_t func = (funcptr_t)buffer;
+    uintptr_t returned = func();
+    if (returned != expected) {
+        printf("FAIL: la.local forward label: expected 0x%lx, got 0x%lx\n",
+            (unsigned long)expected, (unsigned long)returned);
+        result = 1;
+    } else {
+        printf("PASS: la.local forward label: 0x%lx\n", (unsigned long)returned);
+    }
+
+    la_label_free(&assembler, &label);
+    free_executable_buffer(buffer, buffer_size);
+    return result;
+}
+
+static int test_la_local_backward_label(void)
+{
+    int result = 0;
+    size_t buffer_size = 1024;
+    void* buffer = alloc_executable_buffer(buffer_size);
+    if (!buffer) {
+        printf("Failed to allocate executable buffer\n");
+        return 1;
+    }
+
+    lagoon_assembler_t assembler;
+    lagoon_label_t label = { 0 };
+
+    la_init_assembler(&assembler, buffer, buffer_size);
+
+    la_bind(&assembler, &label);
+    la_la_local(&assembler, LA_A0, la_label(&assembler, &label));
+    la_ret(&assembler);
+
+    result |= test_la_local_disassembly(buffer, "la.local backward label",
+        "pcalau12i $a0, 0", "addi.d $a0, $a0, 0");
+
+    uintptr_t expected = (uintptr_t)(assembler.buffer + label.location);
+    size_t code_size = assembler.cursor - assembler.buffer;
+    __builtin___clear_cache(buffer, buffer + code_size);
+
+    funcptr_t func = (funcptr_t)buffer;
+    uintptr_t returned = func();
+    if (returned != expected) {
+        printf("FAIL: la.local backward label: expected 0x%lx, got 0x%lx\n",
+            (unsigned long)expected, (unsigned long)returned);
+        result = 1;
+    } else {
+        printf("PASS: la.local backward label: 0x%lx\n", (unsigned long)returned);
+    }
+
+    la_label_free(&assembler, &label);
+    free_executable_buffer(buffer, buffer_size);
+    return result;
+}
+
+static int test_la_local_forward_label_with_signed_lo12(void)
+{
+    int result = 0;
+    size_t buffer_size = 4096;
+    void* buffer = alloc_executable_buffer(buffer_size);
+    if (!buffer) {
+        printf("Failed to allocate executable buffer\n");
+        return 1;
+    }
+
+    lagoon_assembler_t assembler;
+    lagoon_label_t label = { 0 };
+
+    la_init_assembler(&assembler, buffer, buffer_size);
+
+    la_la_local(&assembler, LA_A0, la_label(&assembler, &label));
+    la_ret(&assembler);
+    while ((size_t)(assembler.cursor - assembler.buffer) < 0x888) {
+        la_nop(&assembler);
+    }
+    la_bind(&assembler, &label);
+
+    result |= test_la_local_disassembly(buffer, "la.local forward label with signed lo12",
+        "pcalau12i $a0, 1", "addi.d $a0, $a0, -1912");
+
+    uintptr_t expected = (uintptr_t)(assembler.buffer + label.location);
+    size_t code_size = assembler.cursor - assembler.buffer;
+    __builtin___clear_cache(buffer, buffer + code_size);
+
+    funcptr_t func = (funcptr_t)buffer;
+    uintptr_t returned = func();
+    if (returned != expected) {
+        printf("FAIL: la.local forward label with signed lo12: expected 0x%lx, got 0x%lx\n",
+            (unsigned long)expected, (unsigned long)returned);
+        result = 1;
+    } else {
+        printf("PASS: la.local forward label with signed lo12: 0x%lx\n", (unsigned long)returned);
+    }
+
+    la_label_free(&assembler, &label);
+    free_executable_buffer(buffer, buffer_size);
+    return result;
+}
+
 int main(void)
 {
     int result = 0;
@@ -297,6 +454,9 @@ int main(void)
     result |= test_forward_branch();
     result |= test_backward_branch();
     result |= test_multiple_forward_branches();
+    result |= test_la_local_forward_label();
+    result |= test_la_local_backward_label();
+    result |= test_la_local_forward_label_with_signed_lo12();
 
     if (result == 0) {
         printf("\nAll label tests passed!\n");

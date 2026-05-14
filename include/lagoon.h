@@ -282,6 +282,7 @@ void la_load_immediate32(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t val
 void la_load_immediate64(lagoon_assembler_t* assembler, la_gpr_t rd, int64_t value);
 
 // pesudo-instructions
+void la_la_local(lagoon_assembler_t* assembler, la_gpr_t rd, ptrdiff_t offset);
 void la_move(lagoon_assembler_t* assembler, la_gpr_t rd, la_gpr_t rj);
 void la_li_w(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t value);
 void la_li_wu(lagoon_assembler_t* assembler, la_gpr_t rd, uint32_t value);
