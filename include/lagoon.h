@@ -6825,28 +6825,28 @@ void la_xvextl_qu_du(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj);
 /**
  * `__m256i __lasx_xvextrins_b (__m256i a, __m256i b, imm0_255 imm)`
  *
- * Extract one 8-bit element in `b` and insert it to `a` according to `imm`.
+ * For each 128-bit half, extract one 8-bit element in `b` and insert it to `a` according to `imm`.
  */
 void la_xvextrins_b(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8);
 
 /**
  * `__m256i __lasx_xvextrins_d (__m256i a, __m256i b, imm0_255 imm)`
  *
- * Extract one 64-bit element in `b` and insert it to `a` according to `imm`.
+ * For each 128-bit half, extract one 64-bit element in `b` and insert it to `a` according to `imm`.
  */
 void la_xvextrins_d(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8);
 
 /**
  * `__m256i __lasx_xvextrins_h (__m256i a, __m256i b, imm0_255 imm)`
  *
- * Extract one 16-bit element in `b` and insert it to `a` according to `imm`.
+ * For each 128-bit half, extract one 16-bit element in `b` and insert it to `a` according to `imm`.
  */
 void la_xvextrins_h(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8);
 
 /**
  * `__m256i __lasx_xvextrins_w (__m256i a, __m256i b, imm0_255 imm)`
  *
- * Extract one 32-bit element in `b` and insert it to `a` according to `imm`.
+ * For each 128-bit half, extract one 32-bit element in `b` and insert it to `a` according to `imm`.
  */
 void la_xvextrins_w(lagoon_assembler_t* assembler, la_xvpr_t xd, la_xvpr_t xj, uint32_t uk8);
 
