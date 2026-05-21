@@ -22,6 +22,10 @@ add_library(lagoon ${LAGOON_SOURCES})
 if(NOT TARGET lagoon::lagoon)
     add_library(lagoon::lagoon ALIAS lagoon)
 endif()
+set_target_properties(lagoon PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION ${PROJECT_VERSION_MAJOR}
+)
 
 target_include_directories(lagoon
     PUBLIC
@@ -60,6 +64,10 @@ if(LAGOON_INSTALL)
     install(
         FILES ${LAGOON_HEADERS}
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+    install(
+        FILES LICENSE
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/licenses/lagoon
     )
     install(
         EXPORT lagoonTargets

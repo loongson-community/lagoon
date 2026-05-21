@@ -5,6 +5,14 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#define LAGOON_VERSION_MAJOR 1
+#define LAGOON_VERSION_MINOR 0
+#define LAGOON_VERSION_PATCH 0
+#define LAGOON_VERSION_STRING "1.0.0"
+#define LAGOON_VERSION_ENCODE(major, minor, patch) (((major) * 10000) + ((minor) * 100) + (patch))
+#define LAGOON_VERSION \
+    LAGOON_VERSION_ENCODE(LAGOON_VERSION_MAJOR, LAGOON_VERSION_MINOR, LAGOON_VERSION_PATCH)
+
 #ifdef LA_DEBUG
 #include <assert.h>
 
