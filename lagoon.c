@@ -255,31 +255,54 @@ void la_label_free(lagoon_assembler_t* assembler, lagoon_label_t* label)
     label->offset_count = 0;
 }
 
+static int32_t sign_extend_field(uint64_t value, unsigned bits)
+{
+    uint64_t sign = 1ULL << (bits - 1);
+
+    value &= (1ULL << bits) - 1;
+    return (int32_t)((value ^ sign) - sign);
+}
+
+static bool is_sign_extended(uint64_t value, unsigned bits)
+{
+    uint64_t sign = 1ULL << (bits - 1);
+    uint64_t mask = (1ULL << bits) - 1;
+    uint64_t lower = value & mask;
+    uint64_t upper = value >> bits;
+    uint64_t expected = (lower & sign) ? (UINT64_MAX >> bits) : 0;
+
+    return upper == expected;
+}
+
 void la_load_immediate32(lagoon_assembler_t* assembler, la_gpr_t rd, int32_t val)
 {
-    if ((val & 0xfff) == val) {
-        la_ori(assembler, rd, LA_ZERO, val);
-    } else if (((val << 20) >> 20) == val) {
-        la_addi_w(assembler, rd, LA_ZERO, val & 0xfff);
-    } else if ((val & 0xfff) == 0) {
-        la_lu12i_w(assembler, rd, (val >> 12) & 0xfffff);
+    uint32_t value = (uint32_t)val;
+
+    if ((value & 0xfff) == value) {
+        la_ori(assembler, rd, LA_ZERO, value);
+    } else if (sign_extend_field(value, 12) == val) {
+        la_addi_w(assembler, rd, LA_ZERO, val);
+    } else if ((value & 0xfff) == 0) {
+        la_lu12i_w(assembler, rd, sign_extend_field(value >> 12, 20));
     } else {
-        la_lu12i_w(assembler, rd, (val >> 12) & 0xfffff);
-        la_ori(assembler, rd, rd, val & 0xfff);
+        la_lu12i_w(assembler, rd, sign_extend_field(value >> 12, 20));
+        la_ori(assembler, rd, rd, value & 0xfff);
     }
 }
 
 void la_load_immediate64(lagoon_assembler_t* assembler, la_gpr_t rd, int64_t val)
 {
-    la_load_immediate32(assembler, rd, val);
-    if (((val << 32) >> 32) == val) {
+    uint64_t value = (uint64_t)val;
+
+    la_load_immediate32(assembler, rd, (int32_t)(uint32_t)value);
+    if (is_sign_extended(value, 32)) {
         return;
     }
-    la_lu32i_d(assembler, rd, (val >> 32) & 0xfffff);
-    if (((val << 12) >> 12) == val) {
+    la_lu32i_d(assembler, rd, sign_extend_field(value >> 32, 20));
+    if (is_sign_extended(value, 52)) {
         return;
     }
-    la_lu52i_d(assembler, rd, rd, (val >> 52) & 0xfff);
+    la_lu52i_d(assembler, rd, rd, sign_extend_field(value >> 52, 12));
 }
 
 void la_la_local(lagoon_assembler_t* assembler, la_gpr_t rd, ptrdiff_t offset)

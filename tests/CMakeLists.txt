@@ -8,6 +8,7 @@ add_test(
 
 add_executable(test_load_immediate test_load_immediate.c ../lagoon.c)
 target_include_directories(test_load_immediate PRIVATE .. ../include)
+target_compile_definitions(test_load_immediate PRIVATE LA_DEBUG)
 
 add_test(
     NAME test_load_immediate
